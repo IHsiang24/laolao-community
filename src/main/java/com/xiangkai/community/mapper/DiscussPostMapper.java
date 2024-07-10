@@ -1,0 +1,15 @@
+package com.xiangkai.community.mapper;
+
+import com.xiangkai.community.entity.DiscussPost;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
+@Mapper
+public interface DiscussPostMapper {
+
+    List<DiscussPost> selectDiscussPosts(Integer userId, Integer offset, Integer limit);
+
+    Integer selectDiscussPostRows(Integer userId);
+
+}
