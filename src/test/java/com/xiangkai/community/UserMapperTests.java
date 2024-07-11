@@ -2,6 +2,7 @@ package com.xiangkai.community;
 
 import com.xiangkai.community.entity.User;
 import com.xiangkai.community.mapper.UserMapper;
+import com.xiangkai.community.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +13,9 @@ import java.util.Date;
 public class UserMapperTests {
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private UserService userService;
 
     @Test
     void selectById() {
@@ -58,5 +62,15 @@ public class UserMapperTests {
     @Test
     void updatePassword() {
         System.out.println(userMapper.updatePassword(150, "111qqq"));
+    }
+
+    @Test
+    void register() {
+        User user = new User().setUsername("十四爷")
+                .setPassword("aaa")
+                .setEmail("2939059539@qq.com")
+                .build();
+
+        userService.register(user);
     }
 }
