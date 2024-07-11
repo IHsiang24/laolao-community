@@ -14,7 +14,7 @@ import javax.mail.internet.MimeMessage;
 public class MailClient {
     private final static Logger LOGGER = LoggerFactory.getLogger(MailClient.class);
 
-    @Value("spring.mail.username")
+    @Value("${spring.mail.username}")
     private String from;
 
     @Autowired
