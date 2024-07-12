@@ -1,4 +1,4 @@
-package com.xiangkai.community.alpha;
+package com.xiangkai.community.alpha.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

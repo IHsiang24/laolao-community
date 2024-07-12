@@ -1,6 +1,6 @@
 package com.xiangkai.community;
 
-import com.xiangkai.community.alpha.MailSendService;
+import com.xiangkai.community.alpha.service.MailSendService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
