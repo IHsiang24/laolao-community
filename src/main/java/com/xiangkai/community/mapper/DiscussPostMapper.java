@@ -1,6 +1,6 @@
 package com.xiangkai.community.mapper;
 
-import com.xiangkai.community.entity.DiscussPost;
+import com.xiangkai.community.model.entity.DiscussPost;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

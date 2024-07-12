@@ -1,8 +1,8 @@
 package com.xiangkai.community.controller;
 
-import com.xiangkai.community.entity.DiscussPost;
-import com.xiangkai.community.entity.Page;
-import com.xiangkai.community.entity.User;
+import com.xiangkai.community.model.entity.DiscussPost;
+import com.xiangkai.community.model.entity.Page;
+import com.xiangkai.community.model.entity.User;
 import com.xiangkai.community.service.DiscussPostService;
 import com.xiangkai.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

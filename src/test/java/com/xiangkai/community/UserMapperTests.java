@@ -1,6 +1,6 @@
 package com.xiangkai.community;
 
-import com.xiangkai.community.entity.User;
+import com.xiangkai.community.model.entity.User;
 import com.xiangkai.community.mapper.UserMapper;
 import com.xiangkai.community.service.UserService;
 import org.junit.jupiter.api.Test;

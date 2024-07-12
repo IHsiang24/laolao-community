@@ -1,7 +1,10 @@
 package com.xiangkai.community.service;
 
 import com.xiangkai.community.constant.CommunityConstant;
-import com.xiangkai.community.entity.User;
+import com.xiangkai.community.model.dto.UserLoginInfo;
+import com.xiangkai.community.model.entity.LoginTicket;
+import com.xiangkai.community.model.entity.User;
+import com.xiangkai.community.mapper.LoginTicketMapper;
 import com.xiangkai.community.mapper.UserMapper;
 import com.xiangkai.community.util.CommunityUtil;
 import com.xiangkai.community.util.MailClient;
@@ -12,6 +15,10 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 @Service
@@ -28,6 +35,9 @@ public class UserService implements CommunityConstant {
 
     @Autowired
     private MailClient mailClient;
+
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
 
     public User findUserById(Integer id) {
         return userMapper.selectById(id);
@@ -96,6 +106,68 @@ public class UserService implements CommunityConstant {
             userMapper.updateStatus(userId, 1);
             return ACTIVATION_SUCCESS;
         }
+    }
+
+    public Map<String, String> login(UserLoginInfo userLoginInfo) {
+
+        Map<String, String> map = new HashMap<>();
+        // 校验用户信息
+        if (StringUtils.isBlank(userLoginInfo.getUsername())) {
+            map.put("usernameMsg", "请输入用户名！");
+            return map;
+        }
+
+        if (StringUtils.isBlank(userLoginInfo.getPassword())) {
+            map.put("passwordMsg", "请输入密码！");
+            return map;
+        }
+
+        User user = userMapper.selectByUserName(userLoginInfo.getUsername());
+        if (Objects.isNull(user)) {
+            map.put("usernameMsg", "用户名不正确！");
+            return map;
+        }
+
+        if (!user.getPassword().equals(CommunityUtil.generateMD5(userLoginInfo.getPassword() + user.getSalt()))) {
+            map.put("passwordMsg", "密码不正确！");
+            return map;
+        }
+
+        if (user.getStatus() == 0) {
+            map.put("usernameMsg", "账号未激活，请先激活！");
+            return map;
+        }
+
+        // 生成登录凭证
+        String ticket = CommunityUtil.generateUUID();
+        LoginTicket loginTicket = new LoginTicket()
+                .setUserId(user.getId())
+                .setTicket(ticket)
+                .setStatus(0)
+                .setExpired(new Date(System.currentTimeMillis() + userLoginInfo.getExpiredSeconds() * 1000))
+                .build();
+
+        loginTicketMapper.insertTicket(loginTicket);
+        map.put("ticket", ticket);
+        return map;
+    }
+
+    public Integer logout(HttpServletRequest request, HttpServletResponse response) {
+
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            if ("ticket".equals(cookie.getName())) {
+                String ticket = cookie.getValue();
+                LoginTicket loginTicket = loginTicketMapper.selectByTicket(ticket);
+                loginTicketMapper.updateStatus(loginTicket.getUserId(), 1);
+
+                // cookie生命周期声明为0等价于删除cookie
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+                return 0;
+            }
+        }
+        return -1;
     }
 
 }

@@ -1,6 +1,4 @@
-package com.xiangkai.community.entity;
-
-import lombok.Data;
+package com.xiangkai.community.model.entity;
 
 public class Page {
 

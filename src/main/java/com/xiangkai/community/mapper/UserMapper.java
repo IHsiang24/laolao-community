@@ -1,6 +1,6 @@
 package com.xiangkai.community.mapper;
 
-import com.xiangkai.community.entity.User;
+import com.xiangkai.community.model.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

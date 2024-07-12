@@ -1,4 +1,4 @@
-package com.xiangkai.community.entity;
+package com.xiangkai.community.model.entity;
 
 import lombok.Data;
 
