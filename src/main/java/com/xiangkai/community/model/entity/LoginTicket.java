@@ -13,6 +13,8 @@ public class LoginTicket {
 
     private Integer status;
 
+    private Date firstLoginTime;
+
     private Date expired;
 
     public Integer getId() {
@@ -48,6 +50,15 @@ public class LoginTicket {
 
     public LoginTicket setStatus(Integer status) {
         this.status = status;
+        return this;
+    }
+
+    public Date getFirstLoginTime() {
+        return firstLoginTime;
+    }
+
+    public LoginTicket setFirstLoginTime(Date firstLoginTime) {
+        this.firstLoginTime = firstLoginTime;
         return this;
     }
 
@@ -88,6 +99,7 @@ public class LoginTicket {
                 ", userId=" + userId +
                 ", ticket='" + ticket + '\'' +
                 ", status=" + status +
+                ", firstLoginTime=" + firstLoginTime +
                 ", expired=" + expired +
                 '}';
     }

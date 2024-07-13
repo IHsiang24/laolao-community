@@ -144,6 +144,7 @@ public class UserService implements CommunityConstant {
                 .setUserId(user.getId())
                 .setTicket(ticket)
                 .setStatus(0)
+                .setFirstLoginTime(new Date())
                 .setExpired(new Date(System.currentTimeMillis() + userLoginInfo.getExpiredSeconds() * 1000))
                 .build();
 

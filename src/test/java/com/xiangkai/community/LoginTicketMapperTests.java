@@ -21,6 +21,7 @@ public class LoginTicketMapperTests {
                 .setUserId(101)
                 .setTicket(CommunityUtil.generateUUID())
                 .setStatus(0)
+                .setFirstLoginTime(new Date())
                 .setExpired(new Date())
                 .build();
 

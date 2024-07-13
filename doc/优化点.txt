@@ -1,0 +1,16 @@
+1.分页管理优化成主流框架
+
+2.分布式部署，session存在的问题
+2.1 粘性session
+    不能保证负载均衡
+2.2 同步session
+    服务器见耦合
+2.3 共享session
+    用一台单独的服务器存储session
+主流办法：数据能存cookie就存cookie，不能存就存数据库（集群），存分布式redis
+
+3.Shiro框架配合kaptcha
+
+4.登陆凭证可否JWT
+
+5.前后端密码加密
