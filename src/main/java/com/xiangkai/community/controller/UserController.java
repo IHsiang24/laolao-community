@@ -2,10 +2,13 @@ package com.xiangkai.community.controller;
 
 import com.xiangkai.community.annotation.LoginRequired;
 import com.xiangkai.community.constant.CommunityConstant;
+import com.xiangkai.community.model.dto.ChangePasswordInfo;
 import com.xiangkai.community.model.entity.HostHolder;
+import com.xiangkai.community.model.entity.LoginTicket;
 import com.xiangkai.community.model.entity.User;
 import com.xiangkai.community.service.UserService;
 import com.xiangkai.community.util.CommunityUtil;
+import com.xiangkai.community.util.CookieUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
@@ -130,6 +135,43 @@ public class UserController implements CommunityConstant {
         } catch (Exception e) {
             LOGGER.error("用户头像显示错误：" + e);
         }
+    }
+
+    @RequestMapping(path = "/changePassword", method = RequestMethod.POST)
+    public String changePassword(Model model, ChangePasswordInfo changePasswordInfo,
+                                 HttpServletRequest request, HttpServletResponse response) {
+
+        // 对输入的内容进行校验
+        User user = hostHolder.get();
+        String passwordInDB = user.getPassword();
+        String passwordInInput = CommunityUtil.generateMD5(changePasswordInfo.getOldPassword() + user.getSalt());
+
+        if (!passwordInDB.equals(passwordInInput)) {
+            model.addAttribute("passwordMsg", "输入的原始密码有误，请重新输入！");
+            return "/site/setting";
+        }
+
+        String newPassword = changePasswordInfo.getNewPassword();
+        String confirmPassword = changePasswordInfo.getConfirmPassword();
+
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("confirmPasswordMsg", "两次输入密码不一致，请重新输入！");
+            return "/site/setting";
+        }
+
+        // 更新数据库的密码
+        String newPasswordInMD5 = CommunityUtil.generateMD5(newPassword + user.getSalt());
+        userService.updatePassword(user.getId(), newPasswordInMD5);
+
+        // 使cookie失效
+        userService.invalidCookie(request, response, "ticket");
+
+        // 使登录凭证失效
+        userService.invalidLoginTicketByUserId(user.getId());
+
+        model.addAttribute("msg", "密码修改成功");
+        model.addAttribute("target", "/login");
+        return "/site/operate-result";
     }
 
 }

@@ -1,0 +1,12 @@
+1.关于cookie失效
+    1)应用场景：退出登录和修改密码（重定向至登录页面）
+    2)成功失效条件：
+        i)需创建新的cookie，name、value、path和原cookie保持一致
+        ii）新的cookie maxAge设为0
+        iii)例子：
+            Cookie cookie = customizedCookie.getCookie();
+            Cookie newCookie = new Cookie(cookie.getName(), cookie.getValue());
+            // cookie生命周期声明为0等价于删除cookie
+            newCookie.setMaxAge(0);
+            newCookie.setPath("/community");
+            response.addCookie(newCookie);`

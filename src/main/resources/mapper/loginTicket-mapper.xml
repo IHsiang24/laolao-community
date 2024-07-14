@@ -22,6 +22,10 @@
         update login_ticket set status = #{status} where user_id = #{userId}
     </update>
 
+    <update id="updateStatusByTicket">
+        update login_ticket set status = #{status} where ticket = #{ticket}
+    </update>
+
     <insert id="insertTicket" parameterType="LoginTicket">
         insert into login_ticket (<include refid="insertFields"></include>)
         values (#{userId}, #{ticket}, #{status}, #{firstLoginTime}, #{expired})

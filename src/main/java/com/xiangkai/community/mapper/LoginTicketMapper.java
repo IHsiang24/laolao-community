@@ -10,6 +10,8 @@ public interface LoginTicketMapper {
 
     Integer updateStatus(Integer userId, Integer status);
 
+    Integer updateStatusByTicket(String ticket, Integer status);
+
     Integer insertTicket(LoginTicket ticket);
 
 }

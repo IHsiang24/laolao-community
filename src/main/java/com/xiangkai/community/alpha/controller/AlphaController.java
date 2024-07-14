@@ -1,6 +1,7 @@
 package com.xiangkai.community.alpha.controller;
 
 import com.xiangkai.community.util.CommunityUtil;
+import com.xiangkai.community.util.CookieUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -63,6 +64,13 @@ public class AlphaController {
         HttpSession session = request.getSession();
         System.out.println(session.getAttribute("code"));
         return "get session";
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/alpha/invalidCookie", method = RequestMethod.GET)
+    public String invalidCookie(HttpServletRequest request, HttpServletResponse response) {
+        CookieUtil.invalidCookie(request, response, "code1");
+        return "invalid cookie";
     }
 
 }

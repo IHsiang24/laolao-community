@@ -1,5 +1,6 @@
 package com.xiangkai.community.controller.interceptor;
 
+import com.xiangkai.community.model.bo.CustomizedCookie;
 import com.xiangkai.community.model.entity.HostHolder;
 import com.xiangkai.community.model.entity.LoginTicket;
 import com.xiangkai.community.model.entity.User;
@@ -26,10 +27,10 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        String ticket = CookieUtil.getCookieValue(request, "ticket");
+        CustomizedCookie cookie = CookieUtil.getCookieByName(request, "ticket");
 
-        if (ticket != null) {
-            LoginTicket loginTicket = userService.findByTicket(ticket);
+        if (cookie != null) {
+            LoginTicket loginTicket = userService.findByTicket(cookie.getValue());
             if (loginTicket!=null && loginTicket.getStatus() == 0 && loginTicket.getExpired().after(new Date())) {
                 User user = userService.findUserById(loginTicket.getUserId());
                 hostHolder.set(user);

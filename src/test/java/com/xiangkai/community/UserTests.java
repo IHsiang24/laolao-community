@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Date;
 
 @SpringBootTest
-public class UserMapperTests {
+public class UserTests {
     @Autowired
     private UserMapper userMapper;
 

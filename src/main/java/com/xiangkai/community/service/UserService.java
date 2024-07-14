@@ -1,12 +1,14 @@
 package com.xiangkai.community.service;
 
 import com.xiangkai.community.constant.CommunityConstant;
+import com.xiangkai.community.model.bo.CustomizedCookie;
 import com.xiangkai.community.model.dto.UserLoginInfo;
 import com.xiangkai.community.model.entity.LoginTicket;
 import com.xiangkai.community.model.entity.User;
 import com.xiangkai.community.mapper.LoginTicketMapper;
 import com.xiangkai.community.mapper.UserMapper;
 import com.xiangkai.community.util.CommunityUtil;
+import com.xiangkai.community.util.CookieUtil;
 import com.xiangkai.community.util.MailClient;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -154,19 +155,14 @@ public class UserService implements CommunityConstant {
 
     public Integer logout(HttpServletRequest request, HttpServletResponse response) {
 
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if ("ticket".equals(cookie.getName())) {
-                String ticket = cookie.getValue();
-                LoginTicket loginTicket = loginTicketMapper.selectByTicket(ticket);
-                loginTicketMapper.updateStatus(loginTicket.getUserId(), 1);
-
-                // cookie生命周期声明为0等价于删除cookie
-                cookie.setMaxAge(0);
-                response.addCookie(cookie);
-                return 0;
-            }
+        CustomizedCookie customizedCookie = CookieUtil.getCookieByName(request, "ticket");
+        if (customizedCookie != null) {
+            CookieUtil.invalidCookie(response, customizedCookie);
+            String ticket = customizedCookie.getValue();
+            invalidLoginTicketByTicket(ticket);
+            return 0;
         }
+
         return -1;
     }
 
@@ -178,4 +174,19 @@ public class UserService implements CommunityConstant {
         userMapper.updateHeaderUrl(userId, headerUrl);
     }
 
+    public void updatePassword(Integer id, String newPassword) {
+        userMapper.updatePassword(id, newPassword);
+    }
+
+    public void invalidCookie(HttpServletRequest request, HttpServletResponse response, String name) {
+        CookieUtil.invalidCookie(request, response, name);
+    }
+
+    public void invalidLoginTicketByUserId(Integer userId) {
+        loginTicketMapper.updateStatus(userId, 1);
+    }
+
+    public void invalidLoginTicketByTicket(String ticket) {
+        loginTicketMapper.updateStatusByTicket(ticket, 1);
+    }
 }
