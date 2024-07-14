@@ -27,4 +27,6 @@ public interface CommunityConstant {
      */
     Integer REMEMBER_SECONDS = 3600 * 24 * 100;
 
+    String IMG_SUFFIX_PATTERN = "^(png|jpg|jpeg|svg)$";
+
 }

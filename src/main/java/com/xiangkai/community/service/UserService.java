@@ -18,7 +18,6 @@ import org.thymeleaf.context.Context;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.*;
 
 @Service
@@ -27,7 +26,7 @@ public class UserService implements CommunityConstant {
     @Value("${com.community.domain}")
     private String domain;
 
-    @Autowired
+    @Autowired(required = false)
     private UserMapper userMapper;
 
     @Autowired
@@ -36,7 +35,7 @@ public class UserService implements CommunityConstant {
     @Autowired
     private MailClient mailClient;
 
-    @Autowired
+    @Autowired(required = false)
     private LoginTicketMapper loginTicketMapper;
 
     public User findUserById(Integer id) {
@@ -173,6 +172,10 @@ public class UserService implements CommunityConstant {
 
     public LoginTicket findByTicket(String ticket) {
         return loginTicketMapper.selectByTicket(ticket);
+    }
+
+    public void updateHeader(Integer userId, String headerUrl) {
+        userMapper.updateHeaderUrl(userId, headerUrl);
     }
 
 }

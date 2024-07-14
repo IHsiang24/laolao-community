@@ -1,6 +1,6 @@
 package com.xiangkai.community.controller.interceptor;
 
-import com.xiangkai.community.model.entity.Holder;
+import com.xiangkai.community.model.entity.HostHolder;
 import com.xiangkai.community.model.entity.LoginTicket;
 import com.xiangkai.community.model.entity.User;
 import com.xiangkai.community.service.UserService;
@@ -20,7 +20,8 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Autowired
     private UserService userService;
 
-    private final Holder<User> holder = new Holder<>();
+    @Autowired
+    private HostHolder hostHolder;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -31,7 +32,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             LoginTicket loginTicket = userService.findByTicket(ticket);
             if (loginTicket!=null && loginTicket.getStatus() == 0 && loginTicket.getExpired().after(new Date())) {
                 User user = userService.findUserById(loginTicket.getUserId());
-                holder.set(user);
+                hostHolder.set(user);
             }
         }
         return true;
@@ -39,7 +40,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        User loginUser = holder.get();
+        User loginUser = hostHolder.get();
         if (modelAndView != null && loginUser != null ) {
             modelAndView.addObject("loginUser", loginUser);
         }
@@ -47,6 +48,6 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        holder.destroy();
+        hostHolder.destroy();
     }
 }
