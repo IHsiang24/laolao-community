@@ -1,5 +1,6 @@
 package com.xiangkai.community.controller;
 
+import com.xiangkai.community.annotation.LoginRequired;
 import com.xiangkai.community.constant.CommunityConstant;
 import com.xiangkai.community.model.entity.HostHolder;
 import com.xiangkai.community.model.entity.User;
@@ -42,11 +43,13 @@ public class UserController implements CommunityConstant {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
+    @LoginRequired
     @RequestMapping(path = "/getSettingPage", method = RequestMethod.GET)
     public String getSettingPage() {
         return "/site/setting";
     }
 
+    @LoginRequired
     @RequestMapping(path = "/uploadHeader", method = RequestMethod.POST)
     public String upload(MultipartFile headerFile, Model model) {
 
