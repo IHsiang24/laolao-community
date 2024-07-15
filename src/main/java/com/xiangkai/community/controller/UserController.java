@@ -4,11 +4,10 @@ import com.xiangkai.community.annotation.LoginRequired;
 import com.xiangkai.community.constant.CommunityConstant;
 import com.xiangkai.community.model.dto.ChangePasswordInfo;
 import com.xiangkai.community.model.entity.HostHolder;
-import com.xiangkai.community.model.entity.LoginTicket;
 import com.xiangkai.community.model.entity.User;
 import com.xiangkai.community.service.UserService;
 import com.xiangkai.community.util.CommunityUtil;
-import com.xiangkai.community.util.CookieUtil;
+import com.xiangkai.community.util.SensitiveFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -45,6 +43,9 @@ public class UserController implements CommunityConstant {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SensitiveFilter filter;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 

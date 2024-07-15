@@ -9,4 +9,4 @@
             // cookie生命周期声明为0等价于删除cookie
             newCookie.setMaxAge(0);
             newCookie.setPath("/community");
-            response.addCookie(newCookie);`
+            response.addCookie(newCookie);
