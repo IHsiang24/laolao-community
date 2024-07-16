@@ -138,6 +138,8 @@ public class UserService implements CommunityConstant {
             return map;
         }
 
+        long currentTimeMillis = System.currentTimeMillis();
+        long expiredInMillis = currentTimeMillis + userLoginInfo.getExpiredSeconds() * 1000;
         // 生成登录凭证
         String ticket = CommunityUtil.generateUUID();
         LoginTicket loginTicket = new LoginTicket()
@@ -145,7 +147,7 @@ public class UserService implements CommunityConstant {
                 .setTicket(ticket)
                 .setStatus(0)
                 .setFirstLoginTime(new Date())
-                .setExpired(new Date(System.currentTimeMillis() + userLoginInfo.getExpiredSeconds() * 1000))
+                .setExpired(new Date(expiredInMillis))
                 .build();
 
         loginTicketMapper.insertTicket(loginTicket);

@@ -23,9 +23,9 @@ public interface CommunityConstant {
     Integer NO_REMEMBER_SECONDS = 3600 * 10;
 
     /**
-     * 登陆时长：一百天
+     * 登陆时长：二十天
      */
-    Integer REMEMBER_SECONDS = 3600 * 24 * 100;
+    Integer REMEMBER_SECONDS = 3600 * 24 * 20;
 
     String IMG_SUFFIX_PATTERN = "^(png|jpg|jpeg|svg)$";
 
