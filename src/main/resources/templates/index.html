@@ -37,7 +37,8 @@
 							</li>
 							<li class="nav-item ml-3 btn-group-vertical dropdown">
 								<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<img th:src="@{${loginUser!=null?loginUser.headerUrl:'http://images.nowcoder.com/head/1t.png'}}" id="userHeader" class="rounded-circle" style="width:30px;"/>
+									<img th:src="@{${loginUser!=null?loginUser.headerUrl:'http://images.nowcoder.com/head/1t.png'}}" id="userHeader" class="rounded-circle"
+										 style="width: auto; height: auto; max-width: 30px; max-height: 30px;"/>
 								</a>
 								<div class="dropdown-menu" aria-labelledby="navbarDropdown">
 									<a th:class="|dropdown-item text-center ${loginUser==null?'disabled':''}|" href="site/profile.html">个人主页</a>
@@ -120,7 +121,8 @@
 				<ul class="list-unstyled">
 					<li class="media pb-3 pt-3 mb-3 border-bottom" th:each="map:${discussPosts}">
 						<a href="site/profile.html">
-							<img th:src="${map.user.headerUrl}" class="mr-4 rounded-circle" alt="用户头像" style="width:50px;height:50px;">
+							<img th:src="${map.user.headerUrl}" class="mr-4 rounded-circle" alt="用户头像"
+								 style="width: auto; height: auto; max-width: 50px; max-height: 50px;">
 						</a>
 						<div class="media-body">
 							<h6 class="mt-0 mb-3">
