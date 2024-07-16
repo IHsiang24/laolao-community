@@ -10,3 +10,7 @@
             newCookie.setMaxAge(0);
             newCookie.setPath("/community");
             response.addCookie(newCookie);
+
+2.前后端异步交互时，有如下改进点：
+    1)使用json交互数据，体量小
+    2)统一前后端错误码格式，便于展示

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试ajax以及前后端统一错误码</title>
+</head>
+<body>
+<button type="submit" class="btn btn-info text-white form-control" onclick="send();">发送</button>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+<script>
+    function send() {
+        $.ajax({
+            url: "/community/ajax",
+            type: 'POST',
+            data: JSON.stringify({username: "向凯", password: "1234"}),
+            success: function (response) {
+                console.log(response.data.username)
+                console.log(response.data.password)
+            },
+            error: function (xhr, status, error) {
+
+            },
+            dataType: "json",
+            contentType: "application/json"
+        });
+    }
+</script>
+</body>
+</html>
