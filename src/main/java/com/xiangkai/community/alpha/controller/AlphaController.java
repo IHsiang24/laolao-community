@@ -73,4 +73,9 @@ public class AlphaController {
         return "invalid cookie";
     }
 
+    @RequestMapping(path = "/alpha/globalExceptionHandler", method = RequestMethod.GET)
+    public void globalExceptionHandler() {
+        throw new IllegalArgumentException("测试全局异常捕获!");
+    }
+
 }
