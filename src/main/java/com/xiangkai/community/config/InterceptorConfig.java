@@ -21,13 +21,15 @@ public class InterceptorConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginInterceptor)
                 .excludePathPatterns(
                         "/**/*.css", "/**/*.js","/**/*.jpg",
-                        "/**/*.png", "/**/*.doc", "/**/*.jpeg"
+                        "/**/*.png", "/**/*.doc", "/**/*.jpeg",
+                        "/**/*.html"
                 );
 
         registry.addInterceptor(loginRequiredInterceptor)
                 .excludePathPatterns(
                         "/**/*.css", "/**/*.js","/**/*.jpg",
-                        "/**/*.png", "/**/*.doc", "/**/*.jpeg"
+                        "/**/*.png", "/**/*.doc", "/**/*.jpeg",
+                        "/**/*.html"
                 );
     }
 }
