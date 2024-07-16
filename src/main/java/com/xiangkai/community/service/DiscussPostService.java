@@ -7,6 +7,7 @@ import com.xiangkai.community.model.entity.DiscussPost;
 import com.xiangkai.community.mapper.DiscussPostMapper;
 import com.xiangkai.community.model.entity.HostHolder;
 import com.xiangkai.community.model.entity.User;
+import com.xiangkai.community.util.SensitiveFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
@@ -22,6 +23,9 @@ public class DiscussPostService {
 
     @Autowired
     private HostHolder hostHolder;
+
+    @Autowired
+    private SensitiveFilter sensitiveFilter;
 
     public List<DiscussPost> findDiscussPosts(Integer userId, Integer offset, Integer limit) {
         return discussPostMapper.selectDiscussPosts(userId, offset, limit);
@@ -46,10 +50,14 @@ public class DiscussPostService {
         String htmlEscapeTitle = HtmlUtils.htmlEscape(title);
         String htmlEscapeContent = HtmlUtils.htmlEscape(content);
 
+        // 处理敏感词
+        String titleByFilter = sensitiveFilter.filter(htmlEscapeTitle);
+        String contentByFilter = sensitiveFilter.filter(htmlEscapeContent);
+
         DiscussPost post = new DiscussPost()
                 .setUserId(user.getId())
-                .setTitle(htmlEscapeTitle)
-                .setContent(htmlEscapeContent)
+                .setTitle(titleByFilter)
+                .setContent(contentByFilter)
                 .setType(0)
                 .setStatus(0)
                 .setCreateTime(new Date())
