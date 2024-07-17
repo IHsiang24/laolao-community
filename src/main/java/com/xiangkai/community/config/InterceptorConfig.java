@@ -1,7 +1,7 @@
 package com.xiangkai.community.config;
 
-import com.xiangkai.community.controller.interceptor.LoginInterceptor;
-import com.xiangkai.community.controller.interceptor.LoginRequiredInterceptor;
+import com.xiangkai.community.config.interceptor.LoginInterceptor;
+import com.xiangkai.community.config.interceptor.LoginRequiredInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

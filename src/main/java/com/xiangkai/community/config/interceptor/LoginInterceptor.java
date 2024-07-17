@@ -1,4 +1,4 @@
-package com.xiangkai.community.controller.interceptor;
+package com.xiangkai.community.config.interceptor;
 
 import com.xiangkai.community.model.bo.CustomizedCookie;
 import com.xiangkai.community.model.entity.HostHolder;
