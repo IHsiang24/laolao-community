@@ -1,4 +1,4 @@
-package com.xiangkai.community.controller;
+package com.xiangkai.community.alpha.controller;
 
 import com.xiangkai.community.errorcode.ErrorCode;
 import com.xiangkai.community.errorcode.Result;
@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Controller
 public class AjaxController {

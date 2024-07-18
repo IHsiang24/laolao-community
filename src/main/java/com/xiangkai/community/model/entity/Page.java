@@ -6,7 +6,7 @@ public class Page {
     private Integer current = 1;
 
     // 每页上限
-    private Integer limit = 6;
+    private Integer limit = 5;
 
     // 数据总数(用于计算总页数)
     private Integer rows;

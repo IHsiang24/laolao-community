@@ -27,6 +27,19 @@ public interface CommunityConstant {
      */
     Integer REMEMBER_SECONDS = 3600 * 24 * 20;
 
+    /**
+     * 图片后缀正则表达式
+     */
     String IMG_SUFFIX_PATTERN = "^(png|jpg|jpeg|svg)$";
+
+    /**
+     * entityTYPE:1 -> 帖子的评论
+     */
+    Integer ENTITY_TYPE_COMMENT = 1;
+
+    /**
+     * entityTYPE:2 -> 回复的评论
+     */
+    Integer ENTITY_TYPE_REPLY = 2;
 
 }

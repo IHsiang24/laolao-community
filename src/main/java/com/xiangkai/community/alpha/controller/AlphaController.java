@@ -1,8 +1,10 @@
 package com.xiangkai.community.alpha.controller;
 
+import com.xiangkai.community.model.entity.User;
 import com.xiangkai.community.util.CommunityUtil;
 import com.xiangkai.community.util.CookieUtil;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -13,6 +15,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Objects;
 
 @Controller
 public class AlphaController {
@@ -76,6 +79,13 @@ public class AlphaController {
     @RequestMapping(path = "/alpha/globalExceptionHandler", method = RequestMethod.GET)
     public void globalExceptionHandler() {
         throw new IllegalArgumentException("测试全局异常捕获!");
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/alpha/modelTest", method = RequestMethod.GET)
+    public String modelTest(Model model, User user) {
+        user.setUsername("xiangkai");
+        return ((User) Objects.requireNonNull(model.getAttribute("user"))).toString();
     }
 
 }
