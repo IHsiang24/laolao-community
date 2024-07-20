@@ -84,9 +84,13 @@ public class DiscussPostController implements CommunityConstant {
                 Map<String, Object> replyMap = new HashMap<>();
                 replyMap.put("reply", reply);
                 replyMap.put("replyUser", userService.findUserById(reply.getUserId()));
-                if (reply.getTargetId() != null) {
+                if (reply.getTargetId() != null && reply.getTargetId() != 0) {
                     User targetUser = userService.findUserById(reply.getTargetId());
                     replyMap.put("targetUser", targetUser);
+                } else {
+                    // 不把key:targetUser加入replyMap，
+                    // 会导致replyvo.targetUser!=null报错（无法读取该键）
+                    replyMap.put("targetUser", null);
                 }
                 repliesVO.add(replyMap);
             }

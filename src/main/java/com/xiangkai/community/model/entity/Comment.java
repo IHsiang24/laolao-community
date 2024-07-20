@@ -12,7 +12,7 @@ public class Comment {
 
     private Integer entityId;
 
-    private Integer targetId;
+    private Integer targetId = 0;
 
     private String content;
 
