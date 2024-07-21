@@ -42,4 +42,14 @@ public interface CommunityConstant {
      */
     Integer ENTITY_TYPE_REPLY = 2;
 
+    /**
+     * 忘记密码验证码有效时长
+     */
+    Integer VERIFICATION_CODE_TIMEOUT = 5 * 60;
+
+    /**
+     * 忘记密码验证码过期
+     */
+    Integer VERIFICATION_CODE_INVALID = 1;
+
 }

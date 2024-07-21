@@ -2,9 +2,11 @@ package com.xiangkai.community.controller;
 
 import com.google.code.kaptcha.Producer;
 import com.xiangkai.community.constant.CommunityConstant;
+import com.xiangkai.community.model.dto.ForgetDTO;
 import com.xiangkai.community.model.dto.UserLoginInfo;
 import com.xiangkai.community.model.entity.User;
 import com.xiangkai.community.service.UserService;
+import com.xiangkai.community.util.CommunityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.context.Context;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -146,6 +148,57 @@ public class LoginController implements CommunityConstant {
             return "redirect:/login";
         }
         return "/index";
+    }
+
+    @RequestMapping(path = "/forget", method = RequestMethod.GET)
+    public String getForgetPage() {
+        return "/site/forget";
+    }
+
+    @RequestMapping(path = "/getVerificationCode", method = RequestMethod.GET)
+    public String getVerificationCode(Model model, HttpServletRequest request, @RequestParam("email") String email) {
+        Map<String, String> map = userService.getVerificationCode(request, email);
+        if (map.containsKey("emailMsg")) {
+            model.addAttribute("emailMsg", map.get("emailMsg"));
+            return "/site/forget";
+        }
+
+        if (map.containsKey("verificationCodeMsg")) {
+            model.addAttribute("verificationCodeMsg", map.get("verificationCodeMsg"));
+            return "/site/forget";
+        }
+
+        model.addAttribute("verificationCodeMsg", "验证码发送成功！");
+        return "/site/forget";
+    }
+
+    @RequestMapping(path = "/forget", method = RequestMethod.POST)
+    public String forget(Model model, ForgetDTO dto, HttpServletRequest request) {
+
+        HttpSession session = request.getSession();
+        Object verificationCode = session.getAttribute("verificationCode");
+
+        if (verificationCode != null && !verificationCode.equals(dto.getCode())) {
+            model.addAttribute("verificationCodeMsg", "验证码有误，请重新输入！");
+            return "/site/forget";
+        }
+
+        User user = userService.findUserByEmail(dto.getEmail());
+        String newPassword = dto.getNewPassword();
+
+        // 更新数据库的密码
+        String newPasswordInMD5 = CommunityUtil.generateMD5(newPassword + user.getSalt());
+        userService.updatePassword(user.getId(), newPasswordInMD5);
+
+        // 使登录凭证失效
+        userService.invalidLoginTicketByUserId(user.getId());
+
+        // 使会话过期
+        session.setMaxInactiveInterval(VERIFICATION_CODE_INVALID);
+
+        model.addAttribute("msg", "密码修改成功");
+        model.addAttribute("target", "/login");
+        return "/site/operate-result";
     }
 
 }

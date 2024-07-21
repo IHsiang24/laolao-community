@@ -2,6 +2,7 @@ package com.xiangkai.community.service;
 
 import com.xiangkai.community.constant.CommunityConstant;
 import com.xiangkai.community.model.bo.CustomizedCookie;
+import com.xiangkai.community.model.dto.ForgetDTO;
 import com.xiangkai.community.model.dto.UserLoginInfo;
 import com.xiangkai.community.model.entity.LoginTicket;
 import com.xiangkai.community.model.entity.User;
@@ -19,6 +20,7 @@ import org.thymeleaf.context.Context;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.*;
 
 @Service
@@ -41,6 +43,10 @@ public class UserService implements CommunityConstant {
 
     public User findUserById(Integer id) {
         return userMapper.selectById(id);
+    }
+
+    public User findUserByEmail(String email) {
+        return userMapper.selectByEmail(email);
     }
 
     public Map<String, String> register(User user) {
@@ -190,5 +196,38 @@ public class UserService implements CommunityConstant {
 
     public void invalidLoginTicketByTicket(String ticket) {
         loginTicketMapper.updateStatusByTicket(ticket, 1);
+    }
+
+    public Map<String, String> getVerificationCode(HttpServletRequest request, String email) {
+        Map<String, String> map = new HashMap<>();
+        if (email == null) {
+            map.put("emailMsg", "邮箱不存在，请输入正确的邮箱！");
+            return map;
+        }
+
+        User user = userMapper.selectByEmail(email);
+        if (user == null) {
+            map.put("emailMsg", "邮箱不存在，请重新输入！");
+            return map;
+        }
+        String verificationCode = CommunityUtil.generateRandom(6, 10);
+
+        // todo: 改为redis存储并设置有效时长为5分钟
+        HttpSession session = request.getSession();
+        if (session.getAttribute("verificationCode") != null) {
+            map.put("verificationCodeMsg", "验证码已发送，请输入！");
+            return map;
+        }
+
+        session.setAttribute("verificationCode", verificationCode);
+        session.setMaxInactiveInterval(VERIFICATION_CODE_TIMEOUT);
+
+        // 发送激活邮件
+        Context context = new Context();
+        context.setVariable("email", email);
+        context.setVariable("verificationCode", verificationCode);
+        String html = templateEngine.process("/mail/forget", context);
+        mailClient.send(email, "忘记密码", html);
+        return map;
     }
 }
