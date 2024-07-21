@@ -1,5 +1,7 @@
 package com.xiangkai.community.controller;
 
+import com.xiangkai.community.errorcode.Result;
+import com.xiangkai.community.model.dto.SendLetterDTO;
 import com.xiangkai.community.model.entity.HostHolder;
 import com.xiangkai.community.model.entity.Message;
 import com.xiangkai.community.model.entity.Page;
@@ -9,9 +11,7 @@ import com.xiangkai.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,7 +93,18 @@ public class MessageController {
         model.addAttribute("lettersVO", lettersVO);
         model.addAttribute("targetUser", getTargetUserId(conversationId));
 
+        List<Integer> updateIds = getUpdateIds(letters);
+        if (!updateIds.isEmpty()) {
+            messageService.updateStatus(updateIds, 1);
+        }
+
         return "/site/letter-detail";
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/send", method = RequestMethod.POST)
+    public Result<Object> sendLetter(@RequestBody SendLetterDTO dto) {
+        return messageService.addMessage(dto);
     }
 
     private User getTargetUserId(String conversationId) {
@@ -109,5 +120,17 @@ public class MessageController {
             return userService.findUserById(id0);
         }
 
+    }
+
+    private List<Integer> getUpdateIds(List<Message> messageList) {
+        List<Integer> ids = new ArrayList<>();
+
+        for (Message letter : messageList) {
+            if (letter.getToId().equals(hostHolder.get().getId()) && letter.getStatus().equals(0)) {
+                ids.add(letter.getId());
+            }
+        }
+
+        return ids;
     }
 }
