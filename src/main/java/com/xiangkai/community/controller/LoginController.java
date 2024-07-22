@@ -190,7 +190,7 @@ public class LoginController implements CommunityConstant {
         String newPasswordInMD5 = CommunityUtil.generateMD5(newPassword + user.getSalt());
         userService.updatePassword(user.getId(), newPasswordInMD5);
 
-        // 使登录凭证失效
+        // 使登录凭证失效，防止别的浏览器登录了
         userService.invalidLoginTicketByUserId(user.getId());
 
         // 使会话过期
