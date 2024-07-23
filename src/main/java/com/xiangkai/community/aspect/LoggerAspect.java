@@ -8,7 +8,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -29,14 +28,15 @@ public class LoggerAspect {
     @Before("pointcut()")
     public void before(JoinPoint joinPoint) {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
-        String ip = request.getRemoteHost();
-        Signature signature = joinPoint.getSignature();
-        String beanName = signature.getDeclaringTypeName();
-        String methodName = signature.getName();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String date = dateFormat.format(new Date());
-        LOGGER.info(String.format("用户[%s], 于[%s]访问了[%s].", ip, date, beanName + "." + methodName));
+        if (attributes != null) {
+            HttpServletRequest request = attributes.getRequest();
+            String ip = request.getRemoteHost();
+            Signature signature = joinPoint.getSignature();
+            String beanName = signature.getDeclaringTypeName();
+            String methodName = signature.getName();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String date = dateFormat.format(new Date());
+            LOGGER.info(String.format("用户[%s], 于[%s]访问了[%s].", ip, date, beanName + "." + methodName));
+        }
     }
-
 }
