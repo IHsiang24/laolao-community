@@ -35,6 +35,11 @@ public interface CommunityConstant {
     /**
      * entityTYPE:1 -> 帖子的评论
      */
+    Integer ENTITY_TYPE_POST = 0;
+
+    /**
+     * entityTYPE:1 -> 帖子的评论
+     */
     Integer ENTITY_TYPE_COMMENT = 1;
 
     /**

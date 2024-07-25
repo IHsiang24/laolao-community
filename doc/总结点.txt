@@ -18,3 +18,8 @@
 3.开发步骤：
     1）数据访问层 -> service层 -> controller视图层
     2）现在数据库造数据，开发select功能，再开发insert功能
+
+4.解决github无法push的问题
+    cmd命令行刷新DNS解析缓存: ipconfig/flushdns
+
+5.redis的查询操作应该放在事务之外

@@ -1,9 +1,11 @@
 package com.xiangkai.community.controller;
 
+import com.xiangkai.community.constant.CommunityConstant;
 import com.xiangkai.community.model.entity.DiscussPost;
 import com.xiangkai.community.model.entity.Page;
 import com.xiangkai.community.model.entity.User;
 import com.xiangkai.community.service.DiscussPostService;
+import com.xiangkai.community.service.LikeService;
 import com.xiangkai.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,13 +19,16 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class HomeController {
+public class HomeController implements CommunityConstant {
 
     @Autowired
     private DiscussPostService discussPostService;
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private LikeService likeService;
 
     @RequestMapping(path = "/index", method = RequestMethod.GET)
     public String index(Model model, Page page) {
@@ -39,6 +44,8 @@ public class HomeController {
             map.put("post", post);
             User user = userService.findUserById(post.getUserId());
             map.put("user", user);
+            Long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, post.getId());
+            map.put("likeCount", likeCount);
             discussPosts.add(map);
         }
         model.addAttribute("discussPosts", discussPosts);
