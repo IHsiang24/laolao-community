@@ -5,6 +5,7 @@ import com.xiangkai.community.constant.CommunityConstant;
 import com.xiangkai.community.model.dto.ChangePasswordInfo;
 import com.xiangkai.community.model.entity.HostHolder;
 import com.xiangkai.community.model.entity.User;
+import com.xiangkai.community.service.LikeService;
 import com.xiangkai.community.service.UserService;
 import com.xiangkai.community.util.CommunityUtil;
 import com.xiangkai.community.util.SensitiveFilter;
@@ -46,6 +47,9 @@ public class UserController implements CommunityConstant {
 
     @Autowired
     private SensitiveFilter filter;
+
+    @Autowired
+    private LikeService likeService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
@@ -173,6 +177,19 @@ public class UserController implements CommunityConstant {
         model.addAttribute("msg", "密码修改成功");
         model.addAttribute("target", "/login");
         return "/site/operate-result";
+    }
+
+    @RequestMapping(path = "/profile/{userId}", method = RequestMethod.GET)
+    public String profile(Model model,
+                          @PathVariable("userId") Integer userId) {
+        User user = userService.findUserById(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("参数错误：用户为空！");
+        }
+        Integer likeCount = likeService.findUserLikeCount(userId);
+        model.addAttribute("user", user);
+        model.addAttribute("likeCount", likeCount);
+        return "/site/profile";
     }
 
 }

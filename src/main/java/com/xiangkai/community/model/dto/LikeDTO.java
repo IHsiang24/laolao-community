@@ -8,4 +8,6 @@ public class LikeDTO {
     public Integer entityType;
 
     public Integer entityId;
+
+    public Integer entityUserId;
 }

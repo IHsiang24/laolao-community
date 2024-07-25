@@ -31,7 +31,7 @@ public class LikeController {
             throw new IllegalArgumentException("参数错误：用户未登录！");
         }
         LikeVO vo = new LikeVO();
-        likeService.like(dto.getEntityType(), dto.getEntityId(), user.getId());
+        likeService.like(dto.getEntityType(), dto.getEntityId(), user.getId(), dto.getEntityUserId());
         Long likeCount = likeService.findEntityLikeCount(dto.getEntityType(), dto.getEntityId());
         Integer likeStatus = likeService.findEntityLikeStatus(dto.getEntityType(), dto.getEntityId(), user.getId());
         vo.setLikeCount(likeCount);
