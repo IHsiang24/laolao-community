@@ -48,6 +48,11 @@ public interface CommunityConstant {
     Integer ENTITY_TYPE_REPLY = 2;
 
     /**
+     * entityTYPE:3 -> 用户
+     */
+    Integer ENTITY_TYPE_USER = 3;
+
+    /**
      * 忘记密码验证码有效时长
      */
     Integer VERIFICATION_CODE_TIMEOUT = 5 * 60;

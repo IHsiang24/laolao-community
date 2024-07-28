@@ -5,6 +5,7 @@ import com.xiangkai.community.constant.CommunityConstant;
 import com.xiangkai.community.model.dto.ChangePasswordInfo;
 import com.xiangkai.community.model.entity.HostHolder;
 import com.xiangkai.community.model.entity.User;
+import com.xiangkai.community.service.FollowService;
 import com.xiangkai.community.service.LikeService;
 import com.xiangkai.community.service.UserService;
 import com.xiangkai.community.util.CommunityUtil;
@@ -50,6 +51,9 @@ public class UserController implements CommunityConstant {
 
     @Autowired
     private LikeService likeService;
+
+    @Autowired
+    private FollowService followService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
@@ -189,6 +193,19 @@ public class UserController implements CommunityConstant {
         Integer likeCount = likeService.findUserLikeCount(userId);
         model.addAttribute("user", user);
         model.addAttribute("likeCount", likeCount);
+
+        long followeeCount = followService.findFolloweeCount(userId, ENTITY_TYPE_USER);
+        long followerCount = followService.findFollowerCount(ENTITY_TYPE_USER, userId);
+
+        boolean followed = false;
+        User loginUser = hostHolder.get();
+        if (loginUser != null) {
+            followed = followService.isFollowed(loginUser.getId(), ENTITY_TYPE_USER, userId);
+        }
+
+        model.addAttribute("followeeCount", followeeCount);
+        model.addAttribute("followerCount", followerCount);
+        model.addAttribute("followed", followed);
         return "/site/profile";
     }
 
