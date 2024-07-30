@@ -41,8 +41,8 @@ public class CommentService implements CommunityConstant {
         return commentMapper.selectCommentRows(entityType, entityId);
     }
 
-    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED)
-    public void addComment(Comment comment) {
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public void addComment(Integer discussPostId, Comment comment) {
 
         User user = hostHolder.get();
         comment.setContent(HtmlUtils.htmlEscape(comment.getContent()));
