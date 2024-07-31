@@ -21,7 +21,7 @@ public class LoggerAspect {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoggerAspect.class);
 
-    @Pointcut("execution(* com.xiangkai.community.service.*.*(..))")
+    @Pointcut("execution(* com.xiangkai.community.controller.*.*(..))")
     public void pointcut() {
     }
 
