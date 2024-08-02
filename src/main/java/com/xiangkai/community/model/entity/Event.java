@@ -58,35 +58,35 @@ public class Event {
         this.data = builder.data;
     }
 
-    public Integer eventTypeId() {
+    public Integer getEventTypeId() {
         return eventTypeId;
     }
 
-    public String topic() {
+    public String getTopic() {
         return topic;
     }
 
-    public Integer userId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public Integer entityType() {
+    public Integer getEntityType() {
         return entityType;
     }
 
-    public Integer entityId() {
+    public Integer getEntityId() {
         return entityId;
     }
 
-    public Integer targetUserId() {
+    public Integer getTargetUserId() {
         return targetUserId;
     }
 
-    public Long timestamp() {
+    public Long getTimestamp() {
         return timestamp;
     }
 
-    public Map<String, Object> data() {
+    public Map<String, Object> getData() {
         return data;
     }
 
