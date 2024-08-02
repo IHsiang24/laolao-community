@@ -78,4 +78,9 @@ public class MessageService {
 
         return first + "_" + second;
     }
+
+    public  Result<Object> addMessage(Message message) {
+        messageMapper.insertMessage(message);
+        return new Result<>(ErrorCode.SUCCESS);
+    }
 }

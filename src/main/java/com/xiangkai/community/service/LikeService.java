@@ -1,5 +1,8 @@
 package com.xiangkai.community.service;
 
+import com.xiangkai.community.constant.CommunityConstant;
+import com.xiangkai.community.event.EventProducer;
+import com.xiangkai.community.model.entity.Event;
 import com.xiangkai.community.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -9,10 +12,13 @@ import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.stereotype.Service;
 
 @Service
-public class LikeService {
+public class LikeService implements CommunityConstant {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    private EventProducer producer;
 
     public void like(int entityType, int entityId, int userId, int entityUserId) {
         redisTemplate.execute(new SessionCallback<Object>() {
@@ -30,6 +36,18 @@ public class LikeService {
                     redisTemplate.opsForSet().remove(entityKey, userId);
                     redisTemplate.opsForValue().decrement(userKey);
                 }
+
+                Event event = new Event.Builder()
+                        .eventTypeId(EVENT_TYPE_ID_LIKE)
+                        .topic(TOPIC_LIKE)
+                        .userId(userId)
+                        .entityType(entityType)
+                        .entityId(entityId)
+                        .targetUserId(entityUserId)
+                        .timestamp(System.currentTimeMillis())
+                        .build();
+
+                producer.fireEvent(event);
                 return redisTemplate.exec();
             }
         });

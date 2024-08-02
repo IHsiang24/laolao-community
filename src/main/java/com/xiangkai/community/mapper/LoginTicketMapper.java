@@ -4,6 +4,7 @@ import com.xiangkai.community.model.entity.LoginTicket;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
+@Deprecated
 public interface LoginTicketMapper {
 
     LoginTicket selectByTicket(String ticket);

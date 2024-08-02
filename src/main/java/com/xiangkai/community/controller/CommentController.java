@@ -19,7 +19,7 @@ public class CommentController {
     @LoginRequired
     @RequestMapping(path = "/add/{discussPostId}", method = RequestMethod.POST)
     public String add(@PathVariable("discussPostId") Integer discussPostId, Comment comment) {
-        commentService.addComment(comment);
+        commentService.addComment(discussPostId, comment);
         return ("redirect:/post/detail/" + discussPostId);
     }
 

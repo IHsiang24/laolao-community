@@ -62,4 +62,53 @@ public interface CommunityConstant {
      */
     Integer VERIFICATION_CODE_INVALID = 1;
 
+    /**
+     * 主题：评论
+     */
+    String TOPIC_COMMENT = "COMMENT";
+
+    /**
+     * 主题：点赞
+     */
+    String TOPIC_LIKE = "LIKE";
+
+    /**
+     * 主题：关注
+     */
+    String TOPIC_FOLLOW = "FOLLOW";
+
+    /**
+     * 事件ID：评论
+     */
+    Integer EVENT_TYPE_ID_COMMENT = 1;
+
+    /**
+     * 事件ID：点赞
+     */
+    Integer EVENT_TYPE_ID_LIKE = 2;
+
+    /**
+     * 事件ID：关注
+     */
+    Integer EVENT_TYPE_ID_FOLLOW = 3;
+
+    /**
+     * 系统用户ID
+     */
+    Integer SYSTEM_USER_ID = 1;
+
+    /**
+     * conversationId: like
+     */
+    String CONVERSATION_ID_LIKE = "like";
+
+    /**
+     * conversationId: like
+     */
+    String CONVERSATION_ID_COMMENT = "comment";
+
+    /**
+     * conversationId: like
+     */
+    String CONVERSATION_ID_FOLLOW = "follow";
 }

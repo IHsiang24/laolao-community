@@ -1,6 +1,8 @@
 package com.xiangkai.community.service;
 
 import com.xiangkai.community.constant.CommunityConstant;
+import com.xiangkai.community.event.EventProducer;
+import com.xiangkai.community.model.entity.Event;
 import com.xiangkai.community.model.entity.HostHolder;
 import com.xiangkai.community.model.entity.User;
 import com.xiangkai.community.util.RedisUtil;
@@ -25,6 +27,9 @@ public class FollowService implements CommunityConstant {
     @Autowired
     private HostHolder hostHolder;
 
+    @Autowired
+    private EventProducer producer;
+
     public void follow(int userId, int entityType, int entityId) {
         redisTemplate.execute(new SessionCallback<Object>() {
             @Override
@@ -35,6 +40,18 @@ public class FollowService implements CommunityConstant {
                 redisTemplate.multi();
                 redisTemplate.opsForZSet().add(targetKey, entityId, System.currentTimeMillis());
                 redisTemplate.opsForZSet().add(followerKey, userId, System.currentTimeMillis());
+
+                Event event = new Event.Builder()
+                        .eventTypeId(EVENT_TYPE_ID_FOLLOW)
+                        .topic(TOPIC_FOLLOW)
+                        .userId(userId)
+                        .entityType(entityType)
+                        .entityId(entityId)
+                        .targetUserId(entityId)
+                        .timestamp(System.currentTimeMillis())
+                        .build();
+
+                producer.fireEvent(event);
                 return redisTemplate.exec();
             }
         });
