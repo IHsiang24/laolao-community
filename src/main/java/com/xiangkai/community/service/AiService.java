@@ -15,7 +15,7 @@ import java.net.InetSocketAddress;
  * 接入AI服务
  */
 @Service
-public class AIService {
+public class AiService {
 
     @Value("${com.baidu.yiyan.api-key}")
     private String apiKey;

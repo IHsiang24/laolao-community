@@ -1,6 +1,6 @@
 package com.xiangkai.community;
 
-import com.xiangkai.community.service.AIService;
+import com.xiangkai.community.service.AiService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +11,7 @@ import java.io.IOException;
 public class BaiduYiYanTests {
 
     @Autowired
-    private AIService aiService;
+    private AiService aiService;
 
     @Test
     void testGetToken() throws IOException {
