@@ -3,38 +3,41 @@ package com.xiangkai.community.config;
 import com.xiangkai.community.annotation.EnumValues2Topics;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-@Configuration
+@Component
 public class DynamicKafkaListenerTopicsConfig {
 
-    @Bean
-    public CommandLineRunner dynamicKafkaListenerTopics() {
-        return args -> {
-            String eventPackageName = "com.xiangkai.community.event";
-            List<Class<?>> classes = scanClasses(eventPackageName);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DynamicKafkaListenerTopicsConfig.class);
 
-            for (Class<?> clazz : classes) {
-                Method[] methods = clazz.getDeclaredMethods();
-                for (Method method : methods) {
-                    EnumValues2Topics enumValues2Topics = method.getAnnotation(EnumValues2Topics.class);
-                    if (enumValues2Topics == null) {
-                        continue;
-                    }
-                    String[] enumValues = getEnumValues(enumValues2Topics.value(), enumValues2Topics.method());
-                    KafkaListener kafkaListener = method.getAnnotation(KafkaListener.class);
-                    setEnumValues(kafkaListener, enumValues);
+    @PostConstruct
+    public void dynamicKafkaListenerTopics() {
+        String eventPackageName = "com.xiangkai.community.event";
+        List<Class<?>> classes = scanClasses(eventPackageName);
+
+        for (Class<?> clazz : classes) {
+            Method[] methods = clazz.getDeclaredMethods();
+            for (Method method : methods) {
+                EnumValues2Topics enumValues2Topics = method.getAnnotation(EnumValues2Topics.class);
+                if (enumValues2Topics == null) {
+                    continue;
                 }
+                String[] enumValues = getEnumValues(enumValues2Topics.value(), enumValues2Topics.method());
+                KafkaListener kafkaListener = method.getAnnotation(KafkaListener.class);
+                LOGGER.info("原始topics为:" + Arrays.toString(kafkaListener.topics()));
+                setEnumValues(kafkaListener, enumValues);
+                LOGGER.info("topics更改为:" + Arrays.toString(kafkaListener.topics()));
             }
-        };
+        }
     }
 
     private String[] getEnumValues(Class<? extends Enum<?>> enumClass, String methodName) {
