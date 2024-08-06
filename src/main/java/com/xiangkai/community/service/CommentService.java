@@ -4,11 +4,8 @@ import com.xiangkai.community.constant.CommunityConstant;
 import com.xiangkai.community.event.EventProducer;
 import com.xiangkai.community.mapper.CommentMapper;
 import com.xiangkai.community.mapper.DiscussPostMapper;
-import com.xiangkai.community.model.entity.Comment;
-import com.xiangkai.community.model.entity.Event;
+import com.xiangkai.community.model.entity.*;
 import com.xiangkai.community.model.entity.Event.Builder;
-import com.xiangkai.community.model.entity.HostHolder;
-import com.xiangkai.community.model.entity.User;
 import com.xiangkai.community.util.SensitiveFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,13 +64,34 @@ public class CommentService implements CommunityConstant {
             discussPostMapper.updateCommentCount(comment.getEntityId(), commentCount);
         }
 
+
+        Integer targetUserId = 0;
+
+        /*
+         如果是直接评论帖子，
+         则event的targetUserId就是帖子作者本人
+        */
+        if (ENTITY_TYPE_COMMENT.equals(comment.getEntityType())) {
+            DiscussPost post = discussPostMapper.selectById(comment.getEntityId());
+            targetUserId = post.getUserId();
+        }
+
+        /*
+         如果是直接回复帖子下面的评论（两种情况，评论的对象即entityId是唯一的，
+         在数据库中只有一条记录），则event的targetUserId就是回复的作者本人
+         */
+        if (ENTITY_TYPE_REPLY.equals(comment.getEntityType())) {
+            Comment commentByEntityId = commentMapper.selectById(comment.getEntityId());
+            targetUserId = commentByEntityId.getUserId();
+        }
+
         Builder builder = new Builder()
                 .eventTypeId(EVENT_TYPE_ID_COMMENT)
                 .topic(TOPIC_COMMENT)
                 .userId(user.getId())
-                .entityType(ENTITY_TYPE_COMMENT)
+                .entityType(comment.getEntityType())
                 .entityId(comment.getEntityId())
-                .targetUserId(comment.getTargetId())
+                .targetUserId(targetUserId)
                 .timestamp(System.currentTimeMillis())
                 .data("discussPostId",discussPostId);
 

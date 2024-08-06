@@ -33,7 +33,7 @@ public interface CommunityConstant {
     String IMG_SUFFIX_PATTERN = "^(png|jpg|jpeg|svg)$";
 
     /**
-     * entityTYPE:1 -> 帖子的评论
+     * entityTYPE:0 -> 帖子
      */
     Integer ENTITY_TYPE_POST = 0;
 
