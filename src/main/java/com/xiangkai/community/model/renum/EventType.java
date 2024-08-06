@@ -1,9 +1,9 @@
 package com.xiangkai.community.model.renum;
 
 public enum EventType {
-    COMMENT("comment"),
-    LIKE("like"),
-    FOLLOW("follow");
+    COMMENT("COMMENT"),
+    LIKE("LIKE"),
+    FOLLOW("FOLLOW");
 
     private String type;
 
