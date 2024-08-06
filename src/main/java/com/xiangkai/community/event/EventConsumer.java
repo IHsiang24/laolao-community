@@ -3,8 +3,10 @@ package com.xiangkai.community.event;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.parser.Feature;
+import com.xiangkai.community.annotation.EnumValues2Topics;
 import com.xiangkai.community.constant.CommunityConstant;
 import com.xiangkai.community.model.entity.Event;
+import com.xiangkai.community.model.renum.EventType;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +18,8 @@ public class EventConsumer implements CommunityConstant {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EventConsumer.class);
 
-    @KafkaListener(topics = {TOPIC_COMMENT, TOPIC_LIKE, TOPIC_FOLLOW})
+    @KafkaListener(topics = {TOPIC_COMMENT})
+    @EnumValues2Topics(value = EventType.class, method = "getType")
     public void handle(ConsumerRecord<String, String> record) {
         if (record == null || record.value() == null) {
             LOGGER.error("解析消息失败！");

@@ -21,7 +21,7 @@ public class EventProducer {
         kafkaTemplate.send(event.getTopic(), event.toJson()).addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
             @Override
             public void onFailure(Throwable ex) {
-                LOGGER.error("消息发送失败, 失败原因:" + ex);
+                LOGGER.error("消息发送失败, 失败原因:\n" + ex);
             }
 
             @Override
