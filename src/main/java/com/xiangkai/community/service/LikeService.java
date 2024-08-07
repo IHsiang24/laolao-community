@@ -2,6 +2,9 @@ package com.xiangkai.community.service;
 
 import com.xiangkai.community.constant.CommunityConstant;
 import com.xiangkai.community.event.EventProducer;
+import com.xiangkai.community.mapper.CommentMapper;
+import com.xiangkai.community.mapper.DiscussPostMapper;
+import com.xiangkai.community.model.entity.Comment;
 import com.xiangkai.community.model.entity.Event;
 import com.xiangkai.community.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,12 @@ public class LikeService implements CommunityConstant {
     @Autowired
     private EventProducer producer;
 
+    @Autowired
+    private DiscussPostMapper discussPostMapper;
+
+    @Autowired
+    private CommentMapper commentMapper;
+
     public void like(int entityType, int entityId, int userId, int entityUserId) {
         redisTemplate.execute(new SessionCallback<Object>() {
             @Override
@@ -32,22 +41,49 @@ public class LikeService implements CommunityConstant {
                 if (isMember != null && !isMember) {
                     redisTemplate.opsForSet().add(entityKey, userId);
                     redisTemplate.opsForValue().increment(userKey);
+
+                    /* 发送点赞类消息 */
+                    Integer discussPostId = 0;
+
+                    // 对帖子点赞
+                    if (ENTITY_TYPE_POST.equals(entityType)) {
+                        discussPostId = entityId;
+                    }
+
+                    // 对回帖点赞
+                    if (ENTITY_TYPE_COMMENT.equals(entityType)) {
+                        // 查找回帖
+                        Comment comment = commentMapper.selectById(entityId);
+                        discussPostId = comment.getEntityId();
+                    }
+
+                    // 对回复点赞
+                    if (ENTITY_TYPE_REPLY.equals(entityType)) {
+                        // 查找回复本身
+                        Comment reply = commentMapper.selectById(entityId);
+
+                        // 查找回复对应的回帖
+                        Comment comment = commentMapper.selectById(reply.getEntityId());
+
+                        discussPostId = comment.getEntityId();
+                    }
+
+                    Event event = new Event.Builder()
+                            .eventTypeId(EVENT_TYPE_ID_LIKE)
+                            .topic(TOPIC_LIKE)
+                            .userId(userId)
+                            .entityType(entityType)
+                            .entityId(entityId)
+                            .targetUserId(entityUserId)
+                            .timestamp(System.currentTimeMillis())
+                            .data("discussPostId", discussPostId)
+                            .build();
+
+                    producer.fireEvent(event);
                 } else {
                     redisTemplate.opsForSet().remove(entityKey, userId);
                     redisTemplate.opsForValue().decrement(userKey);
                 }
-
-                Event event = new Event.Builder()
-                        .eventTypeId(EVENT_TYPE_ID_LIKE)
-                        .topic(TOPIC_LIKE)
-                        .userId(userId)
-                        .entityType(entityType)
-                        .entityId(entityId)
-                        .targetUserId(entityUserId)
-                        .timestamp(System.currentTimeMillis())
-                        .build();
-
-                producer.fireEvent(event);
                 return redisTemplate.exec();
             }
         });
