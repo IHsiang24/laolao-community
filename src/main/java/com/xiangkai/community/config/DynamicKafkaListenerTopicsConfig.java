@@ -3,8 +3,6 @@ package com.xiangkai.community.config;
 import com.xiangkai.community.annotation.EnumValues2Topics;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +14,6 @@ import java.util.Map;
 
 @Component
 public class DynamicKafkaListenerTopicsConfig {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DynamicKafkaListenerTopicsConfig.class);
 
     @PostConstruct
     public void dynamicKafkaListenerTopics() {
@@ -33,9 +29,7 @@ public class DynamicKafkaListenerTopicsConfig {
                 }
                 String[] enumValues = getEnumValues(enumValues2Topics.value(), enumValues2Topics.method());
                 KafkaListener kafkaListener = method.getAnnotation(KafkaListener.class);
-                LOGGER.info("原始topics为:" + Arrays.toString(kafkaListener.topics()));
                 setEnumValues(kafkaListener, enumValues);
-                LOGGER.info("topics更改为:" + Arrays.toString(kafkaListener.topics()));
             }
         }
     }
