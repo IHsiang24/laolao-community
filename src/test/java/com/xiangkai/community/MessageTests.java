@@ -1,5 +1,6 @@
 package com.xiangkai.community;
 
+import com.xiangkai.community.model.entity.Message;
 import com.xiangkai.community.service.MessageService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,5 +35,11 @@ public class MessageTests {
     @Test
     void findUnreadLetterCountByUserId() {
         messageService.findUnreadLetterCountByUserId(111, "111_145");
+    }
+
+    @Test
+    void findLatestNotice() {
+        Message latestCommentMessage = messageService.findLatestNotice(112, "follow");
+        System.out.println(latestCommentMessage);
     }
 }

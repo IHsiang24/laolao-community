@@ -66,6 +66,9 @@ public class MessageController {
 
             Integer totalUnreadLetterCount = messageService.findUnreadLetterCountByUserId(user.getId(), null);
             model.addAttribute("totalUnreadLetterCount", totalUnreadLetterCount);
+
+            Integer noticeUnreadCount = messageService.findUnreadNoticeCount(user.getId(), null);
+            model.addAttribute("noticeUnreadCount", noticeUnreadCount);
         } else {
             throw new IllegalArgumentException("参数错误：用户为空！");
         }

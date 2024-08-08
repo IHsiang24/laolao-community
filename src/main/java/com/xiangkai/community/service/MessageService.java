@@ -83,4 +83,19 @@ public class MessageService {
         messageMapper.insertMessage(message);
         return new Result<>(ErrorCode.SUCCESS);
     }
+
+    public Message findLatestNotice(Integer userId, String topic) {
+        return messageMapper.selectLatestNotice(userId, topic);
+    }
+
+    public Integer findUnreadNoticeCount(Integer userId, String topic) {
+        return messageMapper.selectUnreadNoticeCount(userId, topic);
+    }
+
+    public Integer findTotalNoticeCount(Integer userId, String topic) {
+        return messageMapper.selectTotalNoticeCount(userId, topic);
+    }
+    public List<Message> findNotices(Integer userId, String topic, Integer offset, Integer limit) {
+        return messageMapper.selectNotices(userId, topic, offset, limit);
+    }
 }
