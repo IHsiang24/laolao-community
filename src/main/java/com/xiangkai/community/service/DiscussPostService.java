@@ -4,7 +4,7 @@ import com.xiangkai.community.errorcode.ErrorCode;
 import com.xiangkai.community.errorcode.Result;
 import com.xiangkai.community.model.dto.DiscussPostDTO;
 import com.xiangkai.community.model.entity.DiscussPost;
-import com.xiangkai.community.mapper.DiscussPostMapper;
+import com.xiangkai.community.dao.mapper.DiscussPostMapper;
 import com.xiangkai.community.model.entity.HostHolder;
 import com.xiangkai.community.model.entity.User;
 import com.xiangkai.community.util.SensitiveFilter;

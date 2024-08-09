@@ -1,7 +1,7 @@
 package com.xiangkai.community;
 
 import com.xiangkai.community.model.entity.User;
-import com.xiangkai.community.mapper.UserMapper;
+import com.xiangkai.community.dao.mapper.UserMapper;
 import com.xiangkai.community.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

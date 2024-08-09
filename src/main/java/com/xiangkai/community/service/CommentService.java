@@ -2,8 +2,8 @@ package com.xiangkai.community.service;
 
 import com.xiangkai.community.constant.CommunityConstant;
 import com.xiangkai.community.event.EventProducer;
-import com.xiangkai.community.mapper.CommentMapper;
-import com.xiangkai.community.mapper.DiscussPostMapper;
+import com.xiangkai.community.dao.mapper.CommentMapper;
+import com.xiangkai.community.dao.mapper.DiscussPostMapper;
 import com.xiangkai.community.model.entity.*;
 import com.xiangkai.community.model.entity.Event.Builder;
 import com.xiangkai.community.util.SensitiveFilter;

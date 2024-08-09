@@ -2,8 +2,8 @@ package com.xiangkai.community.service;
 
 import com.xiangkai.community.errorcode.ErrorCode;
 import com.xiangkai.community.errorcode.Result;
-import com.xiangkai.community.mapper.MessageMapper;
-import com.xiangkai.community.mapper.UserMapper;
+import com.xiangkai.community.dao.mapper.MessageMapper;
+import com.xiangkai.community.dao.mapper.UserMapper;
 import com.xiangkai.community.model.dto.SendLetterDTO;
 import com.xiangkai.community.model.entity.HostHolder;
 import com.xiangkai.community.model.entity.Message;

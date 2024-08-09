@@ -1,6 +1,6 @@
 package com.xiangkai.community;
 
-import com.xiangkai.community.mapper.CommentMapper;
+import com.xiangkai.community.dao.mapper.CommentMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

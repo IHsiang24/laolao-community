@@ -2,8 +2,8 @@ package com.xiangkai.community.service;
 
 import com.xiangkai.community.constant.CommunityConstant;
 import com.xiangkai.community.event.EventProducer;
-import com.xiangkai.community.mapper.CommentMapper;
-import com.xiangkai.community.mapper.DiscussPostMapper;
+import com.xiangkai.community.dao.mapper.CommentMapper;
+import com.xiangkai.community.dao.mapper.DiscussPostMapper;
 import com.xiangkai.community.model.entity.Comment;
 import com.xiangkai.community.model.entity.Event;
 import com.xiangkai.community.util.RedisUtil;

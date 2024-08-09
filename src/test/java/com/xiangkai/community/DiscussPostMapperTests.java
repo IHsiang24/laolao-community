@@ -1,6 +1,6 @@
 package com.xiangkai.community;
 
-import com.xiangkai.community.mapper.DiscussPostMapper;
+import com.xiangkai.community.dao.mapper.DiscussPostMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

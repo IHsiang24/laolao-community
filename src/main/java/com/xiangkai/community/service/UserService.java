@@ -2,12 +2,11 @@ package com.xiangkai.community.service;
 
 import com.xiangkai.community.constant.CommunityConstant;
 import com.xiangkai.community.model.bo.CustomizedCookie;
-import com.xiangkai.community.model.dto.ForgetDTO;
 import com.xiangkai.community.model.dto.UserLoginInfo;
 import com.xiangkai.community.model.entity.LoginTicket;
 import com.xiangkai.community.model.entity.User;
-import com.xiangkai.community.mapper.LoginTicketMapper;
-import com.xiangkai.community.mapper.UserMapper;
+import com.xiangkai.community.dao.mapper.LoginTicketMapper;
+import com.xiangkai.community.dao.mapper.UserMapper;
 import com.xiangkai.community.util.CommunityUtil;
 import com.xiangkai.community.util.CookieUtil;
 import com.xiangkai.community.util.MailClient;

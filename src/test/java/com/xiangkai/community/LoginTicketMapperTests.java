@@ -1,7 +1,7 @@
 package com.xiangkai.community;
 
 import com.xiangkai.community.model.entity.LoginTicket;
-import com.xiangkai.community.mapper.LoginTicketMapper;
+import com.xiangkai.community.dao.mapper.LoginTicketMapper;
 import com.xiangkai.community.util.CommunityUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.xiangkai.community.mapper;
+package com.xiangkai.community.dao.mapper;
 
 import com.xiangkai.community.model.entity.Message;
 import org.apache.ibatis.annotations.Mapper;
