@@ -1,6 +1,6 @@
 function like(btn, entityType, entityId, entityUserId) {
     $.ajax({
-        url: "/community/like",
+        url: CONTEXT_PATH + "/like",
         type: 'POST',
         data: JSON.stringify({entityType: entityType, entityId: entityId, entityUserId: entityUserId}),
         success: function (response) {

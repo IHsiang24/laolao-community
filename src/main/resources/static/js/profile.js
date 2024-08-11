@@ -7,7 +7,7 @@ function follow() {
 	if($(btn).hasClass("btn-info")) {
 		// 关注TA
 		$.ajax({
-			url: "/community/follow",
+			url: CONTEXT_PATH + "/follow",
 			type: 'POST',
 			data: JSON.stringify({entityType: 3, entityId: $(btn).prev().val()}),
 			success: function (response) {
