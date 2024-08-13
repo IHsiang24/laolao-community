@@ -31,6 +31,9 @@ public class ElasticSearchController implements CommunityConstant {
     @Autowired
     private LikeService likeService;
 
+    @Autowired
+    private DiscussPostService discussPostService;
+
     @RequestMapping(path = "/search", method = RequestMethod.GET)
     public String search(Model model, Page page, String keyword) {
 
@@ -49,6 +52,11 @@ public class ElasticSearchController implements CommunityConstant {
 
                 Long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, post.getId());
                 vo.setLikeCount(likeCount);
+
+                // 查询回帖数量
+                vo.setCommentCount(
+                        discussPostService.findDiscussPostById(post.getId())
+                        .getCommentCount());
 
                 searchResults.add(vo);
             }

@@ -12,4 +12,6 @@ public class SearchVO {
     private User user;
 
     private Long likeCount;
+
+    private Integer commentCount;
 }
