@@ -13,6 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>community</name>
     <description>nowcoder community project</description>
+    <packaging>war</packaging>
     <url/>
     <licenses>
         <license/>
@@ -134,6 +135,7 @@
     </dependencies>
 
     <build>
+        <finalName>ROOT</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
