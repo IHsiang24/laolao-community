@@ -78,6 +78,11 @@ public interface CommunityConstant {
     String TOPIC_FOLLOW = "FOLLOW";
 
     /**
+     * 主题：发布帖子
+     */
+    String TOPIC_PUBLISH = "PUBLISH";
+
+    /**
      * 事件ID：评论
      */
     Integer EVENT_TYPE_ID_COMMENT = 1;
@@ -93,6 +98,11 @@ public interface CommunityConstant {
     Integer EVENT_TYPE_ID_FOLLOW = 3;
 
     /**
+     * 事件ID：发布帖子
+     */
+    Integer EVENT_TYPE_ID_PUBLISH = 4;
+
+    /**
      * 系统用户ID
      */
     Integer SYSTEM_USER_ID = 1;
@@ -103,12 +113,12 @@ public interface CommunityConstant {
     String CONVERSATION_ID_LIKE = "like";
 
     /**
-     * conversationId: like
+     * conversationId: comment
      */
     String CONVERSATION_ID_COMMENT = "comment";
 
     /**
-     * conversationId: like
+     * conversationId: follow
      */
     String CONVERSATION_ID_FOLLOW = "follow";
 }

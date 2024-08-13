@@ -1,10 +1,13 @@
 package com.xiangkai.community.service;
 
+import com.xiangkai.community.constant.CommunityConstant;
 import com.xiangkai.community.errorcode.ErrorCode;
 import com.xiangkai.community.errorcode.Result;
+import com.xiangkai.community.event.EventProducer;
 import com.xiangkai.community.model.dto.DiscussPostDTO;
 import com.xiangkai.community.model.entity.DiscussPost;
 import com.xiangkai.community.dao.mapper.DiscussPostMapper;
+import com.xiangkai.community.model.entity.Event;
 import com.xiangkai.community.model.entity.HostHolder;
 import com.xiangkai.community.model.entity.User;
 import com.xiangkai.community.util.SensitiveFilter;
@@ -16,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class DiscussPostService {
+public class DiscussPostService implements CommunityConstant {
 
     @Autowired(required = false)
     private DiscussPostMapper discussPostMapper;
@@ -26,6 +29,9 @@ public class DiscussPostService {
 
     @Autowired
     private SensitiveFilter sensitiveFilter;
+
+    @Autowired
+    private EventProducer producer;
 
     public List<DiscussPost> findDiscussPosts(Integer userId, Integer offset, Integer limit) {
         return discussPostMapper.selectDiscussPosts(userId, offset, limit);
@@ -66,6 +72,20 @@ public class DiscussPostService {
                 .build();
 
         discussPostMapper.insertDiscussPost(post);
+
+        // 发布PUBLISH事件
+        Event event = new Event.Builder()
+                .eventTypeId(EVENT_TYPE_ID_PUBLISH)
+                .topic(TOPIC_PUBLISH)
+                .userId(user.getId())
+                .entityType(ENTITY_TYPE_POST)
+                .entityId(post.getId())
+                .targetUserId(user.getId())
+                .timestamp(System.currentTimeMillis())
+                .data("discussPostId", post.getId())
+                .build();
+
+        producer.fireEvent(event);
 
         return new Result<>(ErrorCode.SUCCESS);
     }
