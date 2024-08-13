@@ -1,4 +1,5 @@
-var CONTEXT_PATH = ''
+var CONTEXT_PATH = '/community'
+var JQUERY_CDN_PATH = 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'
 
 window.alert = function(message) {
 	if(!$(".alert-box").length) {
