@@ -13,9 +13,14 @@ public class EventHandlerFactory implements CommunityConstant {
     private static final Map<Integer, String> eventTypeMap = new HashMap<>();
 
     static {
-        eventTypeMap.put(EVENT_TYPE_ID_COMMENT, TOPIC_COMMENT);
-        eventTypeMap.put(EVENT_TYPE_ID_LIKE, TOPIC_LIKE);
-        eventTypeMap.put(EVENT_TYPE_ID_FOLLOW, TOPIC_FOLLOW);
+
+        // 事件ID初始化为评论事件ID
+        Integer eventTypeId = EVENT_TYPE_ID_COMMENT;
+
+        for (EventType value : EventType.values()) {
+            eventTypeMap.put(eventTypeId, value.toString());
+            eventTypeId++;
+        }
     }
 
     public static void registry(String eventType, AbstractEventHandler handler) {
