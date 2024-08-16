@@ -11,6 +11,7 @@ public enum ErrorCode implements BaseErrorCode {
     USERNAME_EXIST(10003, "用户名已经存在"),
     USERTYPE_ERROR(100031, "用户类型不正确"),
     USER_UNLOGIN(100032, "用户未登录"),
+    USER_NO_AUTHORITY(100033, "用户无权限"),
     PHONE_WROND(10004, "手机号不正确"),
     SMS_CODE_ERROR(10007, "手机验证码不正确"),
     PHONE_EXIST(10008, "手机号已经存在"),
