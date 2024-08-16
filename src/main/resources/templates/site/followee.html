@@ -89,6 +89,7 @@
 							<div>
 								<input hidden id="entityId" th:value="${map.user.id}">
 								<button type="button"
+										th:if=" ${map.containsKey('followed')}"
 										th:class="|btn ${map.followed?'btn-secondary':'btn-info'} btn-sm float-right follow-btn|"
 										th:text="${map.followed?'已关注':'关注他'}"
 								>关注TA
