@@ -2,7 +2,6 @@ package com.xiangkai.community.config.filter;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class IndexWebFilter implements Filter {
@@ -13,7 +12,10 @@ public class IndexWebFilter implements Filter {
 
     private static final String CONTEXT_PATH_ = "/community/";
 
-    private static final String INDEX_PATH = CONTEXT_PATH + "/index";
+    /**
+     * 不用加 "/community" 前缀, 配置的context-path会被自动加入
+     */
+    private static final String INDEX_PATH = "/index";
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -23,7 +25,8 @@ public class IndexWebFilter implements Filter {
         String requestURI = httpServletRequest.getRequestURI();
 
         if (ROOT_PATH.equals(requestURI) || CONTEXT_PATH.equals(requestURI) || CONTEXT_PATH_.equals(requestURI)) {
-            request.getRequestDispatcher(INDEX_PATH).forward(request, response);
+            RequestDispatcher dispatcher = request.getRequestDispatcher(INDEX_PATH);
+            dispatcher.forward(request, response);
         }
 
         chain.doFilter(request, response);
