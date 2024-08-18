@@ -52,7 +52,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                         "/user/profile/**",
                         "/user/uploadHeader",
                         "/message/**",
-                        "/notice/**"
+                        "/notice/**",
+                        "/index"
                 )
                 // antMatchers匹配的路径需要什么权限才能访问
                 .hasAnyAuthority(
