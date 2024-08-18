@@ -1,5 +1,7 @@
 package com.xiangkai.community.errorcode;
 
+import com.alibaba.fastjson.JSONObject;
+
 public class Result<T> implements BaseErrorCode {
 
     private Integer code;
@@ -63,5 +65,9 @@ public class Result<T> implements BaseErrorCode {
                 ", message='" + message + '\'' +
                 ", data=" + data +
                 '}';
+    }
+
+    public String toJson() {
+        return JSONObject.toJSONString(this);
     }
 }

@@ -1,7 +1,6 @@
 package com.xiangkai.community.config;
 
 import com.xiangkai.community.config.interceptor.LoginInterceptor;
-import com.xiangkai.community.config.interceptor.LoginRequiredInterceptor;
 import com.xiangkai.community.config.interceptor.NoticeInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,21 +14,11 @@ public class InterceptorConfig implements WebMvcConfigurer {
     private LoginInterceptor loginInterceptor;
 
     @Autowired
-    private LoginRequiredInterceptor loginRequiredInterceptor;
-
-    @Autowired
     private NoticeInterceptor noticeInterceptor;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor)
-                .excludePathPatterns(
-                        "/**/*.css", "/**/*.js","/**/*.jpg",
-                        "/**/*.png", "/**/*.doc", "/**/*.jpeg",
-                        "/**/*.html"
-                );
-
-        registry.addInterceptor(loginRequiredInterceptor)
                 .excludePathPatterns(
                         "/**/*.css", "/**/*.js","/**/*.jpg",
                         "/**/*.png", "/**/*.doc", "/**/*.jpeg",

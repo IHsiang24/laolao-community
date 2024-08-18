@@ -13,6 +13,7 @@ import com.xiangkai.community.util.MailClient;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -46,6 +47,10 @@ public class UserService implements CommunityConstant {
 
     public User findUserByEmail(String email) {
         return userMapper.selectByEmail(email);
+    }
+
+    public User findUserByUsername(String username) {
+        return userMapper.selectByUserName(username);
     }
 
     public Map<String, String> register(User user) {
@@ -228,5 +233,30 @@ public class UserService implements CommunityConstant {
         String html = templateEngine.process("/mail/forget", context);
         mailClient.send(email, "忘记密码", html);
         return map;
+    }
+
+    /**
+     * 获取用户拥有的权限
+     */
+    public Collection<? extends GrantedAuthority> getGrantedAuthorities(Integer userId) {
+
+        User user = findUserById(userId);
+
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+
+        grantedAuthorities.add(new GrantedAuthority() {
+            @Override
+            public String getAuthority() {
+                switch (user.getType()) {
+                    case 0:
+                        return AUTHORITY_USER;
+                    case 1:
+                        return AUTHORITY_ADMIN;
+                    default:
+                        return AUTHORITY_MODERATOR;
+                }
+            }
+        });
+        return grantedAuthorities;
     }
 }

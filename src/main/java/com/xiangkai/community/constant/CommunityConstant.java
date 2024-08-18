@@ -121,4 +121,19 @@ public interface CommunityConstant {
      * conversationId: follow
      */
     String CONVERSATION_ID_FOLLOW = "follow";
+
+    /**
+     * 权限：普通用户
+     */
+    String AUTHORITY_USER = "USER";
+
+    /**
+     * 权限：超级管理员
+     */
+    String AUTHORITY_ADMIN = "ADMIN";
+
+    /**
+     * 权限：版主
+     */
+    String AUTHORITY_MODERATOR = "MODERATOR";
 }

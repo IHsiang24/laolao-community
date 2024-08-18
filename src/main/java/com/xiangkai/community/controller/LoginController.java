@@ -11,6 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
@@ -131,6 +135,19 @@ public class LoginController implements CommunityConstant {
             cookie.setPath(contextPath);
             cookie.setMaxAge(userLoginInfo.getExpiredSeconds());
             response.addCookie(cookie);
+
+            /* 构建用户验证信息，并存入SecurityContext，以便Security进行授权 */
+
+            // 不能只在LoginInterceptor写入SecurityContextHolder的原因如下：
+            // security的鉴权属于Filter阶段，而LoginInterceptor（拦截器）属于DispatcherServlet阶段，
+            // Filter阶段早于DispatcherServlet阶段，如果将SecurityContextHolder的写入放在LoginInterceptor执行，
+            // 则会导致登录两次之后才将SecurityContextHolder成功写入
+            User userByUsername = userService.findUserByUsername(userLoginInfo.getUsername());
+
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    userByUsername, userByUsername.getPassword(), userService.getGrantedAuthorities(userByUsername.getId()));
+
+            SecurityContextHolder.setContext(new SecurityContextImpl(authentication));
             return "redirect:/index";
         }
 
@@ -143,6 +160,8 @@ public class LoginController implements CommunityConstant {
     @RequestMapping(path = "/logout", method = RequestMethod.GET)
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         Integer logoutResult = userService.logout(request, response);
+        // 清理验证结果
+        SecurityContextHolder.clearContext();
         if (logoutResult == 0) {
             // 重定向的是url而非html页面
             return "redirect:/login";

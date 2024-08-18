@@ -11,6 +11,10 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * 引入security框架后，废弃该拦截器
+ */
+@Deprecated
 @Component
 public class LoginRequiredInterceptor implements HandlerInterceptor {
 
