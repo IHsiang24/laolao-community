@@ -6,7 +6,6 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-@Component
 public class IndexWebFilter implements Filter {
 
     private static final String ROOT_PATH = "/";
