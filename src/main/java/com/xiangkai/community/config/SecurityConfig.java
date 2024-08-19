@@ -61,6 +61,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                         AUTHORITY_MODERATOR,
                         AUTHORITY_USER
                 )
+                .antMatchers(
+                        "/post/top",
+                        "/post/wonderful"
+                )
+                .hasAnyAuthority(
+                        AUTHORITY_ADMIN,
+                        AUTHORITY_MODERATOR
+                )
+                .antMatchers(
+                        "/post/blackList"
+                )
+                .hasAnyAuthority(AUTHORITY_ADMIN)
+
                 // 除了antMatchers匹配的路径需要指定的权限外，其他的请求路径不需要权限就能访问
                 .anyRequest()
                 .permitAll()

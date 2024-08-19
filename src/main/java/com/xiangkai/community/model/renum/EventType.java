@@ -4,7 +4,8 @@ public enum EventType {
     COMMENT("COMMENT"),
     LIKE("LIKE"),
     FOLLOW("FOLLOW"),
-    PUBLISH("PUBLISH");
+    PUBLISH("PUBLISH"),
+    DELETE("DELETE");
 
     private String type;
 

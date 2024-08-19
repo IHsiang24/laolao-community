@@ -83,6 +83,11 @@ public interface CommunityConstant {
     String TOPIC_PUBLISH = "PUBLISH";
 
     /**
+     * 主题：删除帖子
+     */
+    String TOPIC_DELETE = "DELETE";
+
+    /**
      * 事件ID：评论
      */
     Integer EVENT_TYPE_ID_COMMENT = 1;
@@ -101,6 +106,11 @@ public interface CommunityConstant {
      * 事件ID：发布帖子
      */
     Integer EVENT_TYPE_ID_PUBLISH = 4;
+
+    /**
+     * 事件ID：删除帖子
+     */
+    Integer EVENT_TYPE_ID_DELETE = 5;
 
     /**
      * 系统用户ID

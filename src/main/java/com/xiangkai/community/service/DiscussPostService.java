@@ -1,10 +1,12 @@
 package com.xiangkai.community.service;
 
 import com.xiangkai.community.constant.CommunityConstant;
+import com.xiangkai.community.dao.mapper.UserMapper;
 import com.xiangkai.community.errorcode.ErrorCode;
 import com.xiangkai.community.errorcode.Result;
 import com.xiangkai.community.event.EventProducer;
 import com.xiangkai.community.model.dto.DiscussPostDTO;
+import com.xiangkai.community.model.dto.SetDTO;
 import com.xiangkai.community.model.entity.DiscussPost;
 import com.xiangkai.community.dao.mapper.DiscussPostMapper;
 import com.xiangkai.community.model.entity.Event;
@@ -17,12 +19,16 @@ import org.springframework.web.util.HtmlUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class DiscussPostService implements CommunityConstant {
 
     @Autowired(required = false)
     private DiscussPostMapper discussPostMapper;
+
+    @Autowired(required = false)
+    private UserMapper userMapper;
 
     @Autowired
     private HostHolder hostHolder;
@@ -93,4 +99,38 @@ public class DiscussPostService implements CommunityConstant {
     public DiscussPost findDiscussPostById(Integer id) {
         return discussPostMapper.selectById(id);
     }
+
+    public Result<Object> top(SetDTO dto) {
+        discussPostMapper.updatePostType(dto.getId(), 1);
+        return new Result<>(ErrorCode.SUCCESS);
+    }
+
+    public Result<Object> wonderful(SetDTO dto) {
+        discussPostMapper.updatePostStatus(dto.getId(), 1);
+        return new Result<>(ErrorCode.SUCCESS);
+    }
+    public Result<Object> blackList(SetDTO dto) {
+
+        discussPostMapper.updatePostStatus(dto.getId(), 2);
+
+        User loginUser = hostHolder.get();
+        DiscussPost post = discussPostMapper.selectById(dto.getId());
+        User user = userMapper.selectById(post.getUserId());
+
+        // 发布DELETE事件
+        Event event = new Event.Builder()
+                .eventTypeId(EVENT_TYPE_ID_DELETE)
+                .topic(TOPIC_DELETE)
+                .userId(loginUser.getId())
+                .entityType(ENTITY_TYPE_POST)
+                .entityId(dto.getId())
+                .targetUserId(user.getId())
+                .timestamp(System.currentTimeMillis())
+                .data("discussPostId", dto.getId())
+                .build();
+        producer.fireEvent(event);
+
+        return new Result<>(ErrorCode.SUCCESS);
+    }
+
 }

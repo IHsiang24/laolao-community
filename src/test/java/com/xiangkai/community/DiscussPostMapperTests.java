@@ -20,4 +20,14 @@ public class DiscussPostMapperTests {
     void selectDiscussPostRows() {
         System.out.println(discussPostMapper.selectDiscussPostRows(0));
     }
+
+    @Test
+    void setStatus() {
+        discussPostMapper.updatePostStatus(289, 1);
+    }
+
+    @Test
+    void setType() {
+        discussPostMapper.updatePostType(289, 1);
+    }
 }

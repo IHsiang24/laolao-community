@@ -3,6 +3,7 @@ package com.xiangkai.community.controller;
 import com.xiangkai.community.constant.CommunityConstant;
 import com.xiangkai.community.errorcode.Result;
 import com.xiangkai.community.model.dto.DiscussPostDTO;
+import com.xiangkai.community.model.dto.SetDTO;
 import com.xiangkai.community.model.entity.*;
 import com.xiangkai.community.service.CommentService;
 import com.xiangkai.community.service.DiscussPostService;
@@ -131,5 +132,23 @@ public class DiscussPostController implements CommunityConstant {
 
         model.addAttribute("commentsVO", commentsVO);
         return "/site/discuss-detail";
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/top", method = RequestMethod.POST)
+    public Result<Object> top(@RequestBody SetDTO dto) {
+        return discussPostService.top(dto);
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/wonderful", method = RequestMethod.POST)
+    public Result<Object> wonderful(@RequestBody SetDTO dto) {
+        return discussPostService.wonderful(dto);
+    }
+
+    @ResponseBody
+    @RequestMapping(path = "/blackList", method = RequestMethod.POST)
+    public Result<Object> blackList(@RequestBody SetDTO dto) {
+        return discussPostService.blackList(dto);
     }
 }
