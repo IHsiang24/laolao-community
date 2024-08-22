@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -148,7 +149,7 @@ public class UserController implements CommunityConstant {
 
     @RequestMapping(path = "/changePassword", method = RequestMethod.POST)
     public String changePassword(Model model, ChangePasswordInfo changePasswordInfo,
-                                 HttpServletRequest request, HttpServletResponse response) {
+                                 HttpServletRequest request, HttpServletResponse response, @CookieValue("ticket") String ticket) {
 
         // 对输入的内容进行校验
         User user = hostHolder.get();
@@ -176,7 +177,9 @@ public class UserController implements CommunityConstant {
         userService.invalidCookie(request, response, "ticket");
 
         // 使登录凭证失效
-        userService.invalidLoginTicketByUserId(user.getId());
+        if (StringUtils.isNotBlank(ticket)) {
+            userService.invalidLoginTicket(ticket);
+        }
 
         model.addAttribute("msg", "密码修改成功");
         model.addAttribute("target", "/login");

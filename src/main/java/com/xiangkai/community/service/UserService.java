@@ -1,7 +1,6 @@
 package com.xiangkai.community.service;
 
 import com.xiangkai.community.constant.CommunityConstant;
-import com.xiangkai.community.model.bo.CustomizedCookie;
 import com.xiangkai.community.model.dto.UserLoginInfo;
 import com.xiangkai.community.model.entity.LoginTicket;
 import com.xiangkai.community.model.entity.User;
@@ -10,9 +9,11 @@ import com.xiangkai.community.dao.mapper.UserMapper;
 import com.xiangkai.community.util.CommunityUtil;
 import com.xiangkai.community.util.CookieUtil;
 import com.xiangkai.community.util.MailClient;
+import com.xiangkai.community.util.RedisUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserService implements CommunityConstant {
@@ -41,8 +43,15 @@ public class UserService implements CommunityConstant {
     @Autowired(required = false)
     private LoginTicketMapper loginTicketMapper;
 
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
     public User findUserById(Integer id) {
-        return userMapper.selectById(id);
+        User user = getCache(id);
+        if (user == null) {
+            user = initCache(id);
+        }
+        return user;
     }
 
     public User findUserByEmail(String email) {
@@ -114,6 +123,7 @@ public class UserService implements CommunityConstant {
             return ACTIVATION_REPEAT;
         } else {
             userMapper.updateStatus(userId, 1);
+            clearCache(userId);
             return ACTIVATION_SUCCESS;
         }
     }
@@ -160,40 +170,38 @@ public class UserService implements CommunityConstant {
                 .setExpired(new Date(expiredInMillis))
                 .build();
 
-        loginTicketMapper.insertTicket(loginTicket);
+        String ticketKey = RedisUtil.getTicketKey(loginTicket.getTicket());
+        redisTemplate.opsForValue().set(ticketKey, loginTicket);
+
         map.put("ticket", ticket);
         return map;
     }
 
-    public Integer logout(HttpServletRequest request, HttpServletResponse response) {
-
-        CustomizedCookie customizedCookie = CookieUtil.getCookieByName(request, "ticket");
-        if (customizedCookie != null) {
-            CookieUtil.invalidCookie(response, customizedCookie);
-            String ticket = customizedCookie.getValue();
-            invalidLoginTicketByTicket(ticket);
-            return 0;
-        }
-
-        return -1;
+    public Integer logout(String ticket) {
+        invalidLoginTicket(ticket);
+        return 0;
     }
 
     public LoginTicket findByTicket(String ticket) {
-        return loginTicketMapper.selectByTicket(ticket);
+        String ticketKey = RedisUtil.getTicketKey(ticket);
+        return (LoginTicket) redisTemplate.opsForValue().get(ticketKey);
     }
 
     public void updateHeader(Integer userId, String headerUrl) {
         userMapper.updateHeaderUrl(userId, headerUrl);
+        clearCache(userId);
     }
 
     public void updatePassword(Integer id, String newPassword) {
         userMapper.updatePassword(id, newPassword);
+        clearCache(id);
     }
 
     public void invalidCookie(HttpServletRequest request, HttpServletResponse response, String name) {
         CookieUtil.invalidCookie(request, response, name);
     }
 
+    @Deprecated
     public void invalidLoginTicketByUserId(Integer userId) {
         loginTicketMapper.updateStatus(userId, 1);
     }
@@ -235,6 +243,13 @@ public class UserService implements CommunityConstant {
         return map;
     }
 
+    public void invalidLoginTicket(String ticket) {
+        String ticketKey = RedisUtil.getTicketKey(ticket);
+        LoginTicket loginTicket = (LoginTicket) redisTemplate.opsForValue().get(ticketKey);
+        loginTicket.setStatus(1);
+        redisTemplate.opsForValue().set(ticketKey, loginTicket);
+    }
+
     /**
      * 获取用户拥有的权限
      */
@@ -258,5 +273,22 @@ public class UserService implements CommunityConstant {
             }
         });
         return grantedAuthorities;
+    }
+
+    private User getCache(Integer userId) {
+        String userKey = RedisUtil.getUserKey(userId);
+        return (User) redisTemplate.opsForValue().get(userKey);
+    }
+
+    private User initCache(Integer userId) {
+        User user = userMapper.selectById(userId);
+        String userKey = RedisUtil.getUserKey(userId);
+        redisTemplate.opsForValue().set(userKey, user, 3600, TimeUnit.SECONDS);
+        return user;
+    }
+
+    private void clearCache(Integer userId) {
+        String userKey = RedisUtil.getUserKey(userId);
+        redisTemplate.delete(userKey);
     }
 }

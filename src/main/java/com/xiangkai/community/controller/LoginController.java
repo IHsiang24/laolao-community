@@ -7,10 +7,13 @@ import com.xiangkai.community.model.dto.UserLoginInfo;
 import com.xiangkai.community.model.entity.User;
 import com.xiangkai.community.service.UserService;
 import com.xiangkai.community.util.CommunityUtil;
+import com.xiangkai.community.util.RedisUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,6 +35,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 public class LoginController implements CommunityConstant {
@@ -46,6 +50,9 @@ public class LoginController implements CommunityConstant {
 
     @Value("${server.servlet.context-path}")
     private String contextPath;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     @RequestMapping(path = "/login", method = RequestMethod.GET)
     public String getloginPage() {
@@ -95,10 +102,17 @@ public class LoginController implements CommunityConstant {
     @RequestMapping(path = "/kaptcha", method = RequestMethod.GET)
     public void kaptcha(HttpServletRequest request, HttpServletResponse response) {
 
-        // 获取验证码并存入会话session中
         String kaptchaCode = producer.createText();
-        HttpSession session = request.getSession();
-        session.setAttribute("kaptchaCode", kaptchaCode);
+
+        String kaptchaOwner = CommunityUtil.generateUUID();
+        Cookie cookie = new Cookie("kaptchaOwner", kaptchaOwner);
+        cookie.setMaxAge(60);
+        cookie.setPath(contextPath);
+        response.addCookie(cookie);
+
+        // 将验证码存入Redis
+        String kaptchaKey = RedisUtil.getKaptchaKey(kaptchaOwner);
+        redisTemplate.opsForValue().set(kaptchaKey, kaptchaCode, 60, TimeUnit.SECONDS);
 
         // 输出验证码图片至浏览器响应
         BufferedImage image = producer.createImage(kaptchaCode);
@@ -113,12 +127,17 @@ public class LoginController implements CommunityConstant {
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     public String login(Model model,
                         UserLoginInfo userLoginInfo,
-                        HttpServletRequest request, HttpServletResponse response) {
+                        HttpServletRequest request, HttpServletResponse response,
+                        @CookieValue("kaptchaOwner") String kaptchaOwner) {
 
         // 校验验证码
-        HttpSession session = request.getSession();
-        Object kaptchaCode = session.getAttribute("kaptchaCode");
-        if (!userLoginInfo.getVerifyCode().equalsIgnoreCase((String) kaptchaCode)) {
+        String kaptchaCode = null;
+        if (StringUtils.isNoneBlank(kaptchaOwner)) {
+            String kaptchaKey = RedisUtil.getKaptchaKey(kaptchaOwner);
+            kaptchaCode = (String) redisTemplate.opsForValue().get(kaptchaKey);
+        }
+
+        if (!userLoginInfo.getVerifyCode().equalsIgnoreCase(kaptchaCode)) {
             model.addAttribute("verifyCodeMsg", "验证码不正确！");
             return "/site/login";
         }
@@ -158,8 +177,8 @@ public class LoginController implements CommunityConstant {
     }
 
     @RequestMapping(path = "/logout", method = RequestMethod.GET)
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
-        Integer logoutResult = userService.logout(request, response);
+    public String logout(@CookieValue("ticket") String ticket) {
+        Integer logoutResult = userService.logout(ticket);
         // 清理验证结果
         SecurityContextHolder.clearContext();
         if (logoutResult == 0) {
@@ -192,7 +211,7 @@ public class LoginController implements CommunityConstant {
     }
 
     @RequestMapping(path = "/forget", method = RequestMethod.POST)
-    public String forget(Model model, ForgetDTO dto, HttpServletRequest request) {
+    public String forget(Model model, ForgetDTO dto, HttpServletRequest request, @CookieValue("ticket") String ticket) {
 
         HttpSession session = request.getSession();
         Object verificationCode = session.getAttribute("verificationCode");
@@ -210,7 +229,9 @@ public class LoginController implements CommunityConstant {
         userService.updatePassword(user.getId(), newPasswordInMD5);
 
         // 使登录凭证失效，防止别的浏览器登录了
-        userService.invalidLoginTicketByUserId(user.getId());
+        if (StringUtils.isNotBlank(ticket)) {
+            userService.invalidLoginTicket(ticket);
+        }
 
         // 使会话过期
         session.setMaxInactiveInterval(VERIFICATION_CODE_INVALID);
