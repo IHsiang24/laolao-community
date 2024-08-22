@@ -70,7 +70,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                         AUTHORITY_MODERATOR
                 )
                 .antMatchers(
-                        "/post/blackList"
+                        "/post/blackList",
+                        "/data/**"
                 )
                 .hasAnyAuthority(AUTHORITY_ADMIN)
 

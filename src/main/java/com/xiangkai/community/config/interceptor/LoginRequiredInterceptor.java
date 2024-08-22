@@ -15,10 +15,8 @@ import javax.servlet.http.HttpServletResponse;
  * 引入security框架后，废弃该拦截器
  */
 @Deprecated
-@Component
 public class LoginRequiredInterceptor implements HandlerInterceptor {
 
-    @Autowired
     private HostHolder hostHolder;
 
     @Override

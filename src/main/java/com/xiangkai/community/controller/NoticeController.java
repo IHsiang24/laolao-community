@@ -109,7 +109,9 @@ public class NoticeController implements CommunityConstant {
             commentMessageBuilder.user(userService.findUserById(event.getUserId()));
             commentMessageBuilder.entityType(event.getEntityType());
             commentMessageBuilder.entityId(event.getEntityId());
-            commentMessageBuilder.postId((Integer) event.getData().get("discussPostId"));
+            if (event.getData() != null) {
+                commentMessageBuilder.postId((Integer) event.getData().get("discussPostId"));
+            }
 
             int count = messageService.findTotalNoticeCount(loginUser.getId(), CONVERSATION_ID_COMMENT);
             commentMessageBuilder.count(count);
