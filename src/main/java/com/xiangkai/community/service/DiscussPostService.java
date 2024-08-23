@@ -1,5 +1,8 @@
 package com.xiangkai.community.service;
 
+import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.xiangkai.community.constant.CommunityConstant;
 import com.xiangkai.community.dao.mapper.UserMapper;
 import com.xiangkai.community.errorcode.ErrorCode;
@@ -14,17 +17,26 @@ import com.xiangkai.community.model.entity.HostHolder;
 import com.xiangkai.community.model.entity.User;
 import com.xiangkai.community.util.RedisUtil;
 import com.xiangkai.community.util.SensitiveFilter;
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
+import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class DiscussPostService implements CommunityConstant {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DiscussPostService.class);
 
     @Autowired(required = false)
     private DiscussPostMapper discussPostMapper;
@@ -44,11 +56,69 @@ public class DiscussPostService implements CommunityConstant {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    @Value("${caffeine.cache.max-size}")
+    private Long cacheMaxSize;
+
+    @Value("${caffeine.cache.expired-seconds}")
+    private Long cacheExpiredSeconds;
+
+    private static LoadingCache<String, List<DiscussPost>> postCache;
+
+    private static LoadingCache<Integer, Integer> rowsCache;
+
+    @PostConstruct
+    private void init() {
+        postCache = Caffeine.newBuilder()
+                .maximumSize(cacheMaxSize)
+                .expireAfterWrite(cacheExpiredSeconds, TimeUnit.SECONDS)
+                .build(new CacheLoader<String, List<DiscussPost>>() {
+                    @Nullable
+                    @Override
+                    public List<DiscussPost> load(String key) throws Exception {
+                        if (StringUtils.isBlank(key)) {
+                            throw new IllegalArgumentException("参数错误！");
+                        }
+                        String[] params = key.split(":");
+
+                        Integer offset = Integer.valueOf(params[0]);
+
+                        Integer limit = Integer.valueOf(params[1]);
+
+                        LOGGER.info("load posts cache from DB!");
+
+                        return discussPostMapper.selectDiscussPosts(0, offset, limit, 1);
+                    }
+                });
+
+        rowsCache = Caffeine.newBuilder()
+                .maximumSize(cacheMaxSize)
+                .expireAfterWrite(cacheExpiredSeconds, TimeUnit.SECONDS)
+                .build(new CacheLoader<Integer, Integer>() {
+                    @Nullable
+                    @Override
+                    public Integer load(Integer key) throws Exception {
+                        if (key == null) {
+                            throw new IllegalArgumentException("参数错误！");
+                        }
+                        LOGGER.info("load rows cache from DB!");
+                        return discussPostMapper.selectDiscussPostRows(0);
+                    }
+                });
+    }
+
     public List<DiscussPost> findDiscussPosts(Integer userId, Integer offset, Integer limit, Integer mode) {
+        if (userId == 0 && mode == 1) {
+            return postCache.get(offset + ":" + limit);
+        }
+        LOGGER.info("load posts from DB!");
         return discussPostMapper.selectDiscussPosts(userId, offset, limit, mode);
     }
 
     public Integer findDiscussPostRows(Integer userId) {
+        if (userId == 0) {
+            return rowsCache.get(0);
+        }
+        LOGGER.info("load rows from DB!");
         return discussPostMapper.selectDiscussPostRows(userId);
     }
 
