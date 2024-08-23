@@ -8,7 +8,7 @@ import java.util.List;
 @Mapper
 public interface DiscussPostMapper {
 
-    List<DiscussPost> selectDiscussPosts(Integer userId, Integer offset, Integer limit);
+    List<DiscussPost> selectDiscussPosts(Integer userId, Integer offset, Integer limit, Integer mode);
 
     Integer selectDiscussPostRows(Integer userId);
 
@@ -21,4 +21,6 @@ public interface DiscussPostMapper {
     Integer updatePostStatus(Integer id, Integer status);
 
     Integer updatePostType(Integer id, Integer type);
+
+    Integer updatePostScore(Integer id, Double score);
 }

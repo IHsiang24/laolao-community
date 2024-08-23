@@ -48,6 +48,9 @@ public class LikeService implements CommunityConstant {
                     // 对帖子点赞
                     if (ENTITY_TYPE_POST.equals(entityType)) {
                         discussPostId = entityId;
+
+                        String postScoreKey = RedisUtil.getPostScoreKey();
+                        redisTemplate.opsForSet().add(postScoreKey, discussPostId);
                     }
 
                     // 对回帖点赞

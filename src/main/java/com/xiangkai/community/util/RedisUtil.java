@@ -12,6 +12,7 @@ public class RedisUtil {
     private static final String PREFIX_USER = "user:";
     private static final String PREFIX_UV = "uv";
     private static final String PREFIX_DAU = "dau";
+    private static final String PREFIX_POST = "post";
 
     // 用集合存点赞的用户id
     // like:entity:entityType:entityId -> set(userId1, userId2,..., userIdx)
@@ -67,5 +68,9 @@ public class RedisUtil {
     // 区间活跃用户
     public static String getDAUKey(String startDate, String endDate) {
         return PREFIX_DAU + SPLIT + startDate + SPLIT + endDate;
+    }
+
+    public static String getPostScoreKey() {
+        return PREFIX_POST + SPLIT + "score";
     }
 }

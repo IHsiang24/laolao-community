@@ -6,8 +6,10 @@ import com.xiangkai.community.dao.mapper.CommentMapper;
 import com.xiangkai.community.dao.mapper.DiscussPostMapper;
 import com.xiangkai.community.model.entity.*;
 import com.xiangkai.community.model.entity.Event.Builder;
+import com.xiangkai.community.util.RedisUtil;
 import com.xiangkai.community.util.SensitiveFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -34,6 +36,9 @@ public class CommentService implements CommunityConstant {
 
     @Autowired
     private EventProducer producer;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     public List<Comment> findComments(Integer entityType, Integer entityId, Integer offset, Integer limit) {
         return commentMapper.selectComments(entityType, entityId, offset, limit);
@@ -97,6 +102,9 @@ public class CommentService implements CommunityConstant {
 
         Event event = builder.build();
         producer.fireEvent(event);
+
+        String postScoreKey = RedisUtil.getPostScoreKey();
+        redisTemplate.opsForSet().add(postScoreKey, discussPostId);
     }
 
 }

@@ -12,8 +12,10 @@ import com.xiangkai.community.dao.mapper.DiscussPostMapper;
 import com.xiangkai.community.model.entity.Event;
 import com.xiangkai.community.model.entity.HostHolder;
 import com.xiangkai.community.model.entity.User;
+import com.xiangkai.community.util.RedisUtil;
 import com.xiangkai.community.util.SensitiveFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
@@ -39,8 +41,11 @@ public class DiscussPostService implements CommunityConstant {
     @Autowired
     private EventProducer producer;
 
-    public List<DiscussPost> findDiscussPosts(Integer userId, Integer offset, Integer limit) {
-        return discussPostMapper.selectDiscussPosts(userId, offset, limit);
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    public List<DiscussPost> findDiscussPosts(Integer userId, Integer offset, Integer limit, Integer mode) {
+        return discussPostMapper.selectDiscussPosts(userId, offset, limit, mode);
     }
 
     public Integer findDiscussPostRows(Integer userId) {
@@ -93,6 +98,9 @@ public class DiscussPostService implements CommunityConstant {
 
         producer.fireEvent(event);
 
+        String postScoreKey = RedisUtil.getPostScoreKey();
+        redisTemplate.opsForSet().add(postScoreKey, post.getId());
+
         return new Result<>(ErrorCode.SUCCESS);
     }
 
@@ -131,6 +139,10 @@ public class DiscussPostService implements CommunityConstant {
         producer.fireEvent(event);
 
         return new Result<>(ErrorCode.SUCCESS);
+    }
+
+    public Integer updateScore(Integer id, Double score) {
+        return discussPostMapper.updatePostScore(id, score);
     }
 
 }

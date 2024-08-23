@@ -13,7 +13,7 @@ public class DiscussPostMapperTests {
 
     @Test
     void selectDiscussPosts() {
-        System.out.println(discussPostMapper.selectDiscussPosts(101, 0, 100));
+        System.out.println(discussPostMapper.selectDiscussPosts(101, 0, 100, 0));
     }
 
     @Test
