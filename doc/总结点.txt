@@ -17,9 +17,28 @@
 
 3.开发步骤：
     1）数据访问层 -> service层 -> controller视图层
-    2）现在数据库造数据，开发select功能，再开发insert功能
+    2）先在数据库造数据，依次开发select -> insert -> update功能
 
 4.解决github无法push的问题
     cmd命令行刷新DNS解析缓存: ipconfig/flushdns
 
 5.redis的查询操作应该放在事务之外
+
+6.会话管理（Interceptor）：关注Cookie和Session的区别
+
+7.关注事务隔离级别，底层基于AOP
+
+8.关注redis数据结构
+
+9.关注kafka的设计模式，与RabbitMQ的区别
+
+10.关注ElasticSearch数据结构-索引
+
+11.缓存组件Guava和Caffeine的区别
+
+12.Quartz 和 Xxl-job的区别
+
+13.面试官：
+    1)职业素养
+    2)项目经验
+    3)专业能力、独立解决问题的能力（哪里熟问哪里） -> 架构图挑一个研究透
