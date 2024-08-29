@@ -13,6 +13,7 @@ import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -24,10 +25,16 @@ public class ScoreJob implements Job, CommunityConstant {
 
     private static Date epoch;
 
+    private static final ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat>() {
+        @Override
+        protected DateFormat initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd yyyy-MM-dd HH:mm:ss");
+        }
+    };
+
     static {
         try {
-            epoch = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                    .parse("2014-08-01 00:00:00");
+            epoch = df.get().parse("2014-08-01 00:00:00");
         } catch (ParseException e) {
             LOGGER.error("解析纪元失败:\n" + e);
         }
