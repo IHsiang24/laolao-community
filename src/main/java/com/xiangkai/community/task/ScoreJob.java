@@ -28,7 +28,7 @@ public class ScoreJob implements Job, CommunityConstant {
     private static final ThreadLocal<DateFormat> df = new ThreadLocal<DateFormat>() {
         @Override
         protected DateFormat initialValue() {
-            return new SimpleDateFormat("yyyy-MM-dd yyyy-MM-dd HH:mm:ss");
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         }
     };
 
