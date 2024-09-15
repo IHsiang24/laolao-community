@@ -2,7 +2,7 @@ package com.xiangkai.community.event;
 
 import com.xiangkai.community.model.entity.Event;
 
-public abstract class AbstractEventHandler {
+public abstract class AbstractEventHandler implements EventHandler {
 
     public AbstractEventHandler() {
         EventHandlerFactory.registry(getType(), this);
