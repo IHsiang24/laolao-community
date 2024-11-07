@@ -12,14 +12,16 @@ import org.springframework.kafka.core.ProducerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-@Configuration
-@ConditionalOnProperty(prefix="kafka",name = "used",havingValue = "true")
+//@Configuration
+//@ConditionalOnProperty(prefix="kafka",name = "used",havingValue = "true")
 public class KafkaTemplateConfig {
+
+    private Integer name;
 
     /**
      * Producer Template 配置
      */
-    @Bean(name="kafkaTemplate")
+//    @Bean(name="kafkaTemplate")
     public KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
@@ -27,7 +29,7 @@ public class KafkaTemplateConfig {
     /**
      * Producer 工厂配置
      */
-    @Bean
+//    @Bean
     public ProducerFactory<String, String> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
@@ -35,7 +37,7 @@ public class KafkaTemplateConfig {
     /**
      * Producer 参数配置
      */
-    @Bean
+//    @Bean
     public Map<String, Object> producerConfigs() {
         Map<String, Object> props = new HashMap<>();
         // 指定多个kafka集群多个地址
