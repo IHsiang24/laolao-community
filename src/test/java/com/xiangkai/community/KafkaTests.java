@@ -1,5 +1,7 @@
 package com.xiangkai.community;
 
+import com.xiangkai.community.dao.mapper.FailedMessagesMapper;
+import com.xiangkai.community.model.entity.FailedMessage;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +10,16 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
+
 @SpringBootTest
 public class KafkaTests {
 
     @Autowired
     private KafkaProducer kafkaProducer;
+
+    @Autowired
+    private FailedMessagesMapper failedMessagesMapper;
 
     @Test
     public void testKafka() {
@@ -24,6 +31,18 @@ public class KafkaTests {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testKafka2() {
+        FailedMessage failedMessage = new FailedMessage.Builder()
+                .topic("test")
+                .partition(1)
+                .key("test")
+                .value("hello")
+                .createTime(new Date()).build();
+
+        failedMessagesMapper.insertFailedMessage(failedMessage);
     }
 
 }
