@@ -19,7 +19,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
 import java.util.Date;
 
 @Component
-public class KafkaProducerService {
+public class KafkaProducerAdaptor {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
@@ -29,10 +29,10 @@ public class KafkaProducerService {
 
     private static final long RETRY_INTERVAL_MS = 1000;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducerService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KafkaProducerAdaptor.class);
 
     @Autowired
-    public KafkaProducerService(KafkaTemplate<String, String> kafkaTemplate, FailedMessagesMapper failedMessagesMapper) {
+    public KafkaProducerAdaptor(KafkaTemplate<String, String> kafkaTemplate, FailedMessagesMapper failedMessagesMapper) {
         this.kafkaTemplate = kafkaTemplate;
         this.failedMessagesMapper = failedMessagesMapper;
     }
