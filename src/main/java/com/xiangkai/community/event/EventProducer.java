@@ -12,9 +12,9 @@ public class EventProducer {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventProducer.class);
 
     @Autowired
-    private KafkaProducerAdaptor kafkaProducerService;
+    private KafkaProducerAdaptor kafkaProducerAdaptor;
 
     public void fireEvent(Event event) {
-        kafkaProducerService.sendMessageWithRetry(event.getTopic(), event.toJson());
+        kafkaProducerAdaptor.sendMessageWithRetry(event.getTopic(), event.toJson());
     }
 }
