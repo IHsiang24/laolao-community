@@ -5,6 +5,7 @@ import com.xiangkai.community.model.entity.FailedMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.retry.RetryCallback;
@@ -20,6 +21,9 @@ import java.util.Date;
 
 @Component
 public class KafkaProducerAdaptor {
+
+    @Value("${spring.kafka.admin.properties.num.partitions}")
+    private int numPartitions;
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
@@ -43,7 +47,8 @@ public class KafkaProducerAdaptor {
             retryTemplate.execute(new RetryCallback<Void, Throwable>() {
                 @Override
                 public Void doWithRetry(RetryContext context) throws Throwable {
-                    ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(topic, message);
+                    int hash = hash(message);
+                    ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(topic, hash % numPartitions, String.valueOf(hash), message);
                     future.addCallback(new ListenableFutureCallback<SendResult<String, String>>() {
                         @Override
                         public void onSuccess(SendResult<String, String> result) {
@@ -85,5 +90,10 @@ public class KafkaProducerAdaptor {
         backOffPolicy.setBackOffPeriod(RETRY_INTERVAL_MS);
         retryTemplate.setBackOffPolicy(backOffPolicy);
         return retryTemplate;
+    }
+
+    private int hash(Object key) {
+        int h;
+        return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
     }
 }
