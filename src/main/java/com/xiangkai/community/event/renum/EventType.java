@@ -5,7 +5,8 @@ public enum EventType {
     LIKE("LIKE"),
     FOLLOW("FOLLOW"),
     PUBLISH("PUBLISH"),
-    DELETE("DELETE");
+    DELETE("DELETE"),
+    REGISTER("REGISTER");
 
     private String type;
 
