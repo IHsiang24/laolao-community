@@ -6,7 +6,7 @@ import com.alibaba.fastjson.parser.Feature;
 import com.xiangkai.community.annotation.EnumValues2Topics;
 import com.xiangkai.community.constant.CommunityConstant;
 import com.xiangkai.community.model.entity.Event;
-import com.xiangkai.community.model.renum.EventType;
+import com.xiangkai.community.event.renum.EventType;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

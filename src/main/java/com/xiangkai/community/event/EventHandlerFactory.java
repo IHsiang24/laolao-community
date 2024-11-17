@@ -1,7 +1,7 @@
 package com.xiangkai.community.event;
 
 import com.xiangkai.community.constant.CommunityConstant;
-import com.xiangkai.community.model.renum.EventType;
+import com.xiangkai.community.event.renum.EventType;
 
 import java.util.HashMap;
 import java.util.Map;

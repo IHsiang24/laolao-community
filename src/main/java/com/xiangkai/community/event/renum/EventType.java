@@ -1,4 +1,4 @@
-package com.xiangkai.community.model.renum;
+package com.xiangkai.community.event.renum;
 
 public enum EventType {
     COMMENT("COMMENT"),
