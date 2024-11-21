@@ -87,7 +87,8 @@ public class KafkaProducerAdaptor {
 
     private int hash(Object key) {
         int h;
-        return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
+        int hash = (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
+        return hash > 0 ? hash : -hash;
     }
 
     private Integer failedMessagePersistence(String topic, String message, Throwable ex) {
