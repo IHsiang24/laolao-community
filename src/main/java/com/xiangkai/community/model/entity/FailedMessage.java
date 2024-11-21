@@ -1,9 +1,10 @@
 package com.xiangkai.community.model.entity;
 
-import lombok.Data;
+import lombok.Getter;
 
 import java.util.Date;
 
+@Getter
 public class FailedMessage {
 
     private final Integer id;
@@ -16,6 +17,8 @@ public class FailedMessage {
 
     private final String value;
 
+    private final String message;
+
     private final String failureReason;
 
     private final Date createTime;
@@ -26,36 +29,9 @@ public class FailedMessage {
         this.partition = builder.partition;
         this.key = builder.key;
         this.value = builder.value;
+        this.message = builder.message;
         this.failureReason = builder.failureReason;
         this.createTime = builder.createTime;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public String getTopic() {
-        return topic;
-    }
-
-    public Integer getPartition() {
-        return partition;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public String getFailureReason() {
-        return failureReason;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
     }
 
     public Builder newBuilder() {
@@ -79,6 +55,8 @@ public class FailedMessage {
 
         private String value;
 
+        private String message;
+
         private String failureReason;
 
         private Date createTime;
@@ -92,6 +70,7 @@ public class FailedMessage {
             this.partition = failedMessage.partition;
             this.key = failedMessage.key;
             this.value = failedMessage.value;
+            this.message = failedMessage.message;
             this.failureReason = failedMessage.failureReason;
             this.createTime = failedMessage.createTime;
         }
@@ -118,6 +97,11 @@ public class FailedMessage {
 
         public Builder value(String value) {
             this.value = value;
+            return this;
+        }
+
+        public Builder message(String message) {
+            this.message = message;
             return this;
         }
 

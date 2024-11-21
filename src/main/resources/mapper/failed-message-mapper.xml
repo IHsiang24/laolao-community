@@ -5,11 +5,11 @@
 
 <mapper namespace="com.xiangkai.community.dao.mapper.FailedMessagesMapper">
     <sql id="selectFields">
-        id, topic, `partition`, `key`, `value`, failure_reason, create_time
+        id, topic, `partition`, `key`, `value`, `message`, failure_reason, create_time
     </sql>
 
     <sql id="insertFields">
-        topic, `partition`, `key`, `value`, failure_reason, create_time
+        topic, `partition`, `key`, `value`, `message`, failure_reason, create_time
     </sql>
 
     <select id="selectFailedMessageById" resultType="FailedMessage">
@@ -20,6 +20,6 @@
 
     <insert id="insertFailedMessage" parameterType="FailedMessage" keyProperty="id">
         insert into failed_messages (<include refid="insertFields"></include>)
-        values (#{topic}, #{partition}, #{key}, #{value}, #{failureReason}, #{createTime})
+        values (#{topic}, #{partition}, #{key}, #{value}, #{message}, #{failureReason}, #{createTime})
     </insert>
 </mapper>

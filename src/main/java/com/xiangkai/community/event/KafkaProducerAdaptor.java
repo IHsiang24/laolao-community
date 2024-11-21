@@ -62,15 +62,7 @@ public class KafkaProducerAdaptor {
                         public void onFailure(Throwable ex) {
                             LOGGER.error("消息发送失败: ", ex);
 
-                            FailedMessage failedMessage = new FailedMessage.Builder()
-                                    .key(null)
-                                    .value(null)
-                                    .topic(topic)
-                                    .partition(null)
-                                    .failureReason(ex.getMessage())
-                                    .createTime(new Date())
-                                    .build();
-                            failedMessagesMapper.insertFailedMessage(failedMessage);
+                            failedMessagePersistence(topic, message, ex);
                         }
                     });
                     return null;
@@ -78,6 +70,7 @@ public class KafkaProducerAdaptor {
             });
         } catch (Throwable e) {
             LOGGER.error("消息重新发送失败，重试次数已达最大值", e);
+            failedMessagePersistence(topic, message, e);
         }
     }
 
@@ -95,5 +88,18 @@ public class KafkaProducerAdaptor {
     private int hash(Object key) {
         int h;
         return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
+    }
+
+    private Integer failedMessagePersistence(String topic, String message, Throwable ex) {
+        FailedMessage failedMessage = new FailedMessage.Builder()
+                .key(null)
+                .value(null)
+                .topic(topic)
+                .partition(null)
+                .message(message)
+                .failureReason(ex.getMessage())
+                .createTime(new Date())
+                .build();
+        return failedMessagesMapper.insertFailedMessage(failedMessage);
     }
 }
