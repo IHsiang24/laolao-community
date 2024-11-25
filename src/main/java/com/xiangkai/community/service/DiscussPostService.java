@@ -30,7 +30,6 @@ import org.springframework.web.util.HtmlUtils;
 import javax.annotation.PostConstruct;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -152,26 +151,15 @@ public class DiscussPostService implements CommunityConstant {
                 .setScore(0.0)
                 .build();
 
-        discussPostMapper.insertDiscussPost(post);
+        Integer result = discussPostMapper.insertDiscussPost(post);
 
-        // 发布PUBLISH事件
-        Event event = new Event.Builder()
-                .eventTypeId(EVENT_TYPE_ID_PUBLISH)
-                .topic(TOPIC_PUBLISH)
-                .userId(user.getId())
-                .entityType(ENTITY_TYPE_POST)
-                .entityId(post.getId())
-                .targetUserId(user.getId())
-                .timestamp(System.currentTimeMillis())
-                .data("discussPostId", post.getId())
-                .build();
+        if (result >= 0) {
+            String postScoreKey = RedisUtil.getPostScoreKey();
+            redisTemplate.opsForSet().add(postScoreKey, post.getId());
 
-        producer.fireEvent(event);
-
-        String postScoreKey = RedisUtil.getPostScoreKey();
-        redisTemplate.opsForSet().add(postScoreKey, post.getId());
-
-        return new Result<>(ErrorCode.SUCCESS);
+            return new Result<>(ErrorCode.SUCCESS);
+        }
+        return new Result<>(ErrorCode.SYSTEM_INTERNAL_ERROR);
     }
 
     public DiscussPost findDiscussPostById(Integer id) {

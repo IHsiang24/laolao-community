@@ -20,12 +20,12 @@ public class CanalMessageListener implements CommandLineRunner {
 
     private final static Integer BATCH_SIZE = 1000;
 
-    private final static String SUBSCRIBE = "nowcoder.failed_messages";
+    private final static String SUBSCRIBE = "nowcoder.discuss_post";
 
-    private final MessageHandler messageHandler;
+    private final CanalMessageHandler messageHandler;
 
     @Autowired
-    public CanalMessageListener(MessageHandler messageHandler) {
+    public CanalMessageListener(CanalMessageHandler messageHandler) {
         this.messageHandler = messageHandler;
     }
 
@@ -44,6 +44,7 @@ public class CanalMessageListener implements CommandLineRunner {
             connector.connect();
             connector.subscribe(SUBSCRIBE);
             connector.rollback();
+            LOGGER.info("Initial canal listening complete!");
             while (true) {
                 Message message = connector.getWithoutAck(BATCH_SIZE); // 获取指定数量的数据
                 messageHandler.handle(message);
