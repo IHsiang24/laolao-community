@@ -1,6 +1,6 @@
-package com.xiangkai.community.event.impl;
+package com.xiangkai.community.event.eventhandler.impl;
 
-import com.xiangkai.community.event.EventHandler;
+import com.xiangkai.community.event.eventhandler.EventHandler;
 import com.xiangkai.community.model.entity.Event;
 import org.springframework.stereotype.Component;
 

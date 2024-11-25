@@ -1,4 +1,4 @@
-package com.xiangkai.community.event;
+package com.xiangkai.community.event.eventhandler;
 
 import com.xiangkai.community.constant.CommunityConstant;
 import com.xiangkai.community.event.renum.EventType;

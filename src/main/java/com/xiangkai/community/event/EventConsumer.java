@@ -5,6 +5,8 @@ import com.alibaba.fastjson.TypeReference;
 import com.alibaba.fastjson.parser.Feature;
 import com.xiangkai.community.annotation.EnumValues2Topics;
 import com.xiangkai.community.constant.CommunityConstant;
+import com.xiangkai.community.event.eventhandler.AbstractEventHandler;
+import com.xiangkai.community.event.eventhandler.EventHandlerFactory;
 import com.xiangkai.community.model.entity.Event;
 import com.xiangkai.community.event.renum.EventType;
 import org.apache.commons.collections4.map.SingletonMap;

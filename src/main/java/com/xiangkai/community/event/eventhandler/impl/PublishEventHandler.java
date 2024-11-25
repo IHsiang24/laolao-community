@@ -1,7 +1,7 @@
-package com.xiangkai.community.event.impl;
+package com.xiangkai.community.event.eventhandler.impl;
 
 import com.xiangkai.community.constant.CommunityConstant;
-import com.xiangkai.community.event.AbstractEventHandler;
+import com.xiangkai.community.event.eventhandler.AbstractEventHandler;
 import com.xiangkai.community.model.entity.DiscussPost;
 import com.xiangkai.community.model.entity.Event;
 import com.xiangkai.community.service.DiscussPostService;
@@ -21,6 +21,7 @@ public class PublishEventHandler extends AbstractEventHandler implements Communi
     @Override
     public void handle(Event event) {
         DiscussPost post = discussPostService.findDiscussPostById(event.getEntityId());
+        System.out.println("post" + post + ": " + post.getCreateTime());
         elasticSearchService.savePost(post);
     }
 

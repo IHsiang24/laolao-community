@@ -1,7 +1,7 @@
-package com.xiangkai.community.event.impl;
+package com.xiangkai.community.event.eventhandler.impl;
 
 import com.xiangkai.community.constant.CommunityConstant;
-import com.xiangkai.community.event.AbstractEventHandler;
+import com.xiangkai.community.event.eventhandler.AbstractEventHandler;
 import com.xiangkai.community.model.entity.Event;
 import com.xiangkai.community.model.entity.Message;
 import com.xiangkai.community.service.MessageService;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 @Component
-public class CommentEventHandler extends AbstractEventHandler implements CommunityConstant {
+public class LikeEventHandler extends AbstractEventHandler implements CommunityConstant {
 
     @Autowired
     private MessageService messageService;
@@ -21,7 +21,7 @@ public class CommentEventHandler extends AbstractEventHandler implements Communi
         Message message = new Message.Builder()
                 .fromId(SYSTEM_USER_ID)
                 .toId(event.getTargetUserId())
-                .conversationId(CONVERSATION_ID_COMMENT)
+                .conversationId(CONVERSATION_ID_LIKE)
                 .content(event.toJson())
                 .status(0)
                 .createTime(new Date(event.getTimestamp()))
@@ -32,6 +32,6 @@ public class CommentEventHandler extends AbstractEventHandler implements Communi
 
     @Override
     public String getType() {
-        return TOPIC_COMMENT;
+        return TOPIC_LIKE;
     }
 }
