@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xiangkai.community.dao.mapper.EsSyncSucceedDiscussPostMapper">
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into es_sync_succeed_discuss_post(`status`)
+        values (#{status})
+    </insert>
+
+    <select id="selectById" resultType="EsSyncSucceedDiscussPost">
+        select *
+        from es_sync_succeed_discuss_post
+        where id = #{id}
+    </select>
+</mapper>
