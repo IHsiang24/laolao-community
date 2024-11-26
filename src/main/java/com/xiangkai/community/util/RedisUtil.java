@@ -73,4 +73,8 @@ public class RedisUtil {
     public static String getPostScoreKey() {
         return PREFIX_POST + SPLIT + "score";
     }
+
+    public static String getPostKey(Integer hotPostId) {
+        return PREFIX_POST + SPLIT + hotPostId;
+    }
 }

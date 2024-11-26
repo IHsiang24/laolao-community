@@ -15,9 +15,11 @@ import com.xiangkai.community.dao.mapper.DiscussPostMapper;
 import com.xiangkai.community.model.entity.Event;
 import com.xiangkai.community.model.entity.HostHolder;
 import com.xiangkai.community.model.entity.User;
+import com.xiangkai.community.service.cache.HotKeyDetector;
 import com.xiangkai.community.util.RedisUtil;
 import com.xiangkai.community.util.SensitiveFilter;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,19 +57,26 @@ public class DiscussPostService implements CommunityConstant {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    @Autowired
+    private HotKeyDetector hotKeyDetector;
+
     @Value("${caffeine.cache.max-size}")
     private Long cacheMaxSize;
 
     @Value("${caffeine.cache.expired-seconds}")
     private Long cacheExpiredSeconds;
 
-    private static LoadingCache<String, List<DiscussPost>> postCache;
+    // 缓存首页帖子概览
+    private static LoadingCache<String, List<DiscussPost>> postsCache;
+
+    // 缓存单个帖子详情
+    private static LoadingCache<String, DiscussPost> hotPostsCache;
 
     private static LoadingCache<Integer, Integer> rowsCache;
 
     @PostConstruct
     private void init() {
-        postCache = Caffeine.newBuilder()
+        postsCache = Caffeine.newBuilder()
                 .maximumSize(cacheMaxSize)
                 .expireAfterWrite(cacheExpiredSeconds, TimeUnit.SECONDS)
                 .build(new CacheLoader<String, List<DiscussPost>>() {
@@ -103,11 +112,34 @@ public class DiscussPostService implements CommunityConstant {
                         return discussPostMapper.selectDiscussPostRows(0);
                     }
                 });
+
+        hotPostsCache = Caffeine.newBuilder()
+                .maximumSize(cacheMaxSize)
+                .expireAfterWrite(cacheExpiredSeconds, TimeUnit.SECONDS)
+                .build(new CacheLoader<String, DiscussPost>() {
+                    @Override
+                    public @Nullable DiscussPost load(@NonNull String key) throws Exception {
+                        if (hotKeyDetector.isHotKey(key)) {
+                            LOGGER.info("{} is hotKey! Load from caffeine",key);
+                            if (redisTemplate.hasKey(key)) {
+                                return (DiscussPost) redisTemplate.opsForValue().get(key);
+                            }
+
+                            String[] params = key.split(":");
+                            Integer postId = Integer.valueOf(params[1]);
+                            DiscussPost post = discussPostMapper.selectById(postId);
+                            String hotPostKey = RedisUtil.getPostKey(postId);
+                            redisTemplate.opsForValue().set(hotPostKey, post);
+                            return post;
+                        }
+                        return null;
+                    }
+                });
     }
 
     public List<DiscussPost> findDiscussPosts(Integer userId, Integer offset, Integer limit, Integer mode) {
         if (userId == 0 && mode == 1) {
-            return postCache.get(offset + ":" + limit);
+            return postsCache.get(offset + ":" + limit);
         }
         LOGGER.info("load posts from DB!");
         return discussPostMapper.selectDiscussPosts(userId, offset, limit, mode);
@@ -163,7 +195,19 @@ public class DiscussPostService implements CommunityConstant {
     }
 
     public DiscussPost findDiscussPostById(Integer id) {
-        return discussPostMapper.selectById(id);
+        String postKey = RedisUtil.getPostKey(id);
+        hotKeyDetector.recordAccess(postKey);
+
+        DiscussPost hotPost = hotPostsCache.get(postKey);
+        if (hotPost != null) {
+            return hotPost;
+        } else if (redisTemplate.hasKey(postKey)) {
+            return (DiscussPost) redisTemplate.opsForValue().get(postKey);
+        } else {
+            DiscussPost discussPost = discussPostMapper.selectById(id);
+            redisTemplate.opsForValue().set(postKey, discussPost);
+            return discussPost;
+        }
     }
 
     public Result<Object> top(SetDTO dto) {
