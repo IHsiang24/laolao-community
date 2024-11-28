@@ -36,7 +36,7 @@ public class CanalMessageListener implements CommandLineRunner {
 
     public void startListening() {
         // 创建链接
-        InetSocketAddress socketAddress = new InetSocketAddress(AddressUtils.getHostIp(), 11111);
+        InetSocketAddress socketAddress = new InetSocketAddress("140.246.24.208", 11111);
 
         CanalConnector connector = CanalConnectors.newSingleConnector(socketAddress, "example", "", "");
 
