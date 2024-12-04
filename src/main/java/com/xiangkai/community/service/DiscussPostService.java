@@ -201,7 +201,7 @@ public class DiscussPostService implements CommunityConstant {
         DiscussPost hotPost = hotPostsCache.get(postKey);
         if (hotPost != null) {
             return hotPost;
-        } else if (redisTemplate.hasKey(postKey)) {
+        } else if (Boolean.TRUE.equals(redisTemplate.hasKey(postKey))) {
             return (DiscussPost) redisTemplate.opsForValue().get(postKey);
         } else {
             DiscussPost discussPost = discussPostMapper.selectById(id);
