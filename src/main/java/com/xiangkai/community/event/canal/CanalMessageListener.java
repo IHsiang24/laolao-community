@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
-@Component
 public class CanalMessageListener implements CommandLineRunner {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CanalMessageListener.class);

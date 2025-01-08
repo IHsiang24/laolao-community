@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Component
 public class DiscussPostInsertCanalMessageHandler extends AbstractCanalMessageHandler implements CommunityConstant {
 
     private static final Logger logger = LoggerFactory.getLogger(DiscussPostInsertCanalMessageHandler.class);
