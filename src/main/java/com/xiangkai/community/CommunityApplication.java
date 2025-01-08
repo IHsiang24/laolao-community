@@ -32,14 +32,12 @@ public class CommunityApplication {
             String property = env.getProperty("server.servlet.context-path");
             String path = property == null ? "" :  property;
             LOGGER.info(
-                    "\n\t" +
-                    "----------------------------------------------------------\n\t" +
-                    "Application Sailrui-Boot is running! Access URLs:\n\t" +
-                    "Local: \t\thttp://localhost:" + port + path + "/\n\t" +
-                    "External: \thttp://" + ip + ":" + port + path + "/\n\t" +
-                    "------------------------------------------------------------");
+                    "\n\t----------------------------------------------------------\n\t" +
+                    "Application Sailrui-Boot is running! Access URLs:\n\tLocal: \t\thttp://localhost:{}{}/\n\tExternal: \thttp://{}:{}{}/\n\t" +
+                    "----------------------------------------------------------",
+                    port, path, ip, port, path);
         } catch (UnknownHostException e) {
-            LOGGER.error("获取本机IP失败:\n" + e);
+            LOGGER.error("获取本机IP失败:", e);
         }
     }
 

@@ -11,8 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-@Component
-public class BeanA implements CommentMapper {
+public class BeanA{
 
     private BeanB beanB;
 

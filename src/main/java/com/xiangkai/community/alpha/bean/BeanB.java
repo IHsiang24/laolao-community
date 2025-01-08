@@ -2,7 +2,6 @@ package com.xiangkai.community.alpha.bean;
 
 import org.springframework.stereotype.Service;
 
-@Service
 public class BeanB {
 
     private BeanA beanA;
