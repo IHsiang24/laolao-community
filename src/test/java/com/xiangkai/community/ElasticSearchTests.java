@@ -38,7 +38,7 @@ public class ElasticSearchTests {
     public void testAdd() {
         DiscussPost post = mapper.selectById(109);
         repository.save(post);
-        List<DiscussPost> discussPosts = mapper.selectDiscussPosts(0, 10000, 40000, 0);
+        List<DiscussPost> discussPosts = mapper.selectDiscussPosts(0, 110000, 40000, 0);
         for(DiscussPost post2 : discussPosts){
             repository.save(post2);
         }

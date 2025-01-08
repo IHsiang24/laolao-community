@@ -17,7 +17,6 @@ public class DiscussPostMapperTests {
     @Test
     void selectDiscussPosts() {
         SqlSession sqlSession = null;
-        sqlSession.clearCache();
         long start1 = System.currentTimeMillis();
         System.out.println(discussPostMapper.selectDiscussPosts(101, 0, 100, 0));
         System.out.println("首次查询耗时：" + (System.currentTimeMillis() - start1)/1000 + "秒");
