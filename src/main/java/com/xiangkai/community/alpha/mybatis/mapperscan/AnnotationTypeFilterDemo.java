@@ -1,4 +1,4 @@
-package com.xiangkai.community.alpha.mapperscan;
+package com.xiangkai.community.alpha.mybatis.mapperscan;
 
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.classreading.MetadataReader;
